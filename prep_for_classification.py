@@ -52,11 +52,30 @@ if __name__ in "__main__":
 
     outpath = path / "data"
 
+    # make sure that output folder exists
+    if not outpath.exists():
+        outpath.mkdir()
+
     for subject in subjects:
         subject_path = MEG_data_path / subject
         # find the folder with MEG data and not the folder with MRI data
         subject_meg_path = list(subject_path.glob("*_000000"))[0]
 
+        # make a folder for the subject
+        subject_outpath = outpath / subject
+
         for recording_name in recording_names:
             fif_file_path = list((subject_meg_path / "MEG" / recording_name / "files").glob("*.fif"))[0]
             X, y = preprocess_data(fif_file_path)
+
+            # path for saving the data
+            recording_outpath = subject_outpath / recording_name
+
+            # make a folder for the recording
+            if not recording_outpath.exists():
+                recording_outpath.mkdir()
+
+            # save the data
+            np.save(recording_outpath / "X.npy", X)
+            np.save(recording_outpath / "y.npy", y)
+        
