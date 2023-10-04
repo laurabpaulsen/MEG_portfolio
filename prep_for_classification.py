@@ -1,5 +1,9 @@
 """
 This script loops over all participants and all sessions and prepares the data for classification analysis.
+
+DEV NOTES:
+- [ ] Do we want to morph to "average" brain so we can compare across subjects?
+- [ ] Do we want to parcel the data?
 """
 
 from pathlib import Path
@@ -22,13 +26,11 @@ def preprocess_data_sensorspace(fif_path:Path):
     # find the events
     events = mne.find_events(raw, min_duration=0.0002)
 
-    # remove channel MEG0422
+    # remove channel MEG0422 (bad in all recordings)
     raw.drop_channels(["MEG0422"])
 
-
-
     # epoching
-    epochs = mne.Epochs(raw, events, tmin=-0.2, tmax=1, baseline=(None, 0))
+    epochs = mne.Epochs(raw, events, tmin=-0.2, tmax=1, baseline=(None, 0), preload = True)
 
     return epochs
 
@@ -51,10 +53,10 @@ def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, me
 if __name__ in "__main__":
     path = Path(__file__).parent
 
-    fs_subjects_dir = Path("/work/xxxxx") # path to freesurfer subjects directory
+    fs_subjects_dir = Path("/work/835482") # path to freesurfer subjects directory
     MEG_data_path = Path("/work/834761")
     subjects = ["0115"]
-    recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2',  '004.other_block2', '005.self_block3',  '006.other_block3']
+    recording_names = ['001.self_block1',  '002.other_block1']#, '003.self_block2',  '004.other_block2', '005.self_block3',  '006.other_block3']
 
     outpath = path / "data"
 
@@ -90,7 +92,9 @@ if __name__ in "__main__":
                 X = np.concatenate((X, X_tmp))
                 y = np.concatenate((y, y_tmp))
 
-    
+        print(X.shape)
+        print(y.shape)
+        
         # save the data
         np.save(subject_outpath / "X.npy", X)
         np.save(subject_outpath / "y.npy", y)
