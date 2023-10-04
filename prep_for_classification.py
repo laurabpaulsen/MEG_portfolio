@@ -55,7 +55,7 @@ if __name__ in "__main__":
     MEG_data_path = Path("/work/834761")
     subjects = ["0115"] # ["0108","0109","0110","0111","0112","0113","0114","0115"]
     recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2',  '004.other_block2', '005.self_block3',  '006.other_block3']
-    morphmap_path = "/work/835482/morph-maps/"
+    morphmap_path = fs_subjects_dir "/morph-maps"
     outpath = path / "data"
 
     # make sure that output folder exists
@@ -84,8 +84,13 @@ if __name__ in "__main__":
             stcs = epochs_to_sourcespace(epochs, fwd)
 
             # morph subject path
-            fsaverage-0114-morph.fif
+            morph_subject_path = fs_subjects_dir / f"fsaverage-{subject}-morph.fif"
+
             # read
+            morph = mne.read_source_morph(morph_subject_path)
+
+            # morph
+            stcs = morph.apply(stcs)
             
 
             X = np.array([stc.data for stc in stcs])
