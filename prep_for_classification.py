@@ -7,7 +7,7 @@ import mne
 import numpy as np
 
 
-def preprocess_data(fif_path:Path):
+def preprocess_data_sensorspace(fif_path:Path):
     raw = mne.io.read_raw_fif(fif_path)
 
     # projecting out the empty room noise
@@ -31,23 +31,30 @@ def preprocess_data(fif_path:Path):
     # epoching
     epochs = mne.Epochs(raw, events, tmin=-0.2, tmax=1, baseline=(None, 0), reject=reject, preload=True)
 
-    X = epochs.get_data()
+    return epochs
+
+
+
+def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, method='dSPM', label=None):
+    noise_cov = mne.compute_covariance(epochs, tmax=0.000)
+    
+    inv = mne.minimum_norm.make_inverse_operator(epochs.info, fwd, noise_cov)
+
+    stcs = mne.minimum_norm.apply_inverse_epochs(epochs, inv, lambda2, method, label, pick_ori=pick_ori)
+
+    X = np.array([stc.data for stc in stcs])
     y = epochs.events[:, -1]
 
     return X, y
 
 
 
-
-
-
-
 if __name__ in "__main__":
     path = Path(__file__).parent
 
+    fs_subjects_dir = Path("/work/xxxxx") # path to freesurfer subjects directory
     MEG_data_path = Path("/work/834761")
     subjects = ["0115"]
-    subject_folder = "20230928_000000"
     recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2',  '004.other_block2', '005.self_block3',  '006.other_block3']
 
     outpath = path / "data"
@@ -64,18 +71,28 @@ if __name__ in "__main__":
         # make a folder for the subject
         subject_outpath = outpath / subject
 
-        for recording_name in recording_names:
+        if not subject_outpath.exists():
+            subject_outpath.mkdir()
+
+        for idx, recording_name in enumerate(recording_names):
             fif_file_path = list((subject_meg_path / "MEG" / recording_name / "files").glob("*.fif"))[0]
-            X, y = preprocess_data(fif_file_path)
+            epochs = preprocess_data_sensorspace(fif_file_path)
 
-            # path for saving the data
-            recording_outpath = subject_outpath / recording_name
+            # load forward solution
+            fwd_fname = recording_name[4:] + '-oct-6-src-' / '5120-fwd.fif'
+            fwd = mne.read_forward_solution(fs_subjects_dir / subject / 'bem' / fwd_fname)
 
-            # make a folder for the recording
-            if not recording_outpath.exists():
-                recording_outpath.mkdir()
+            X_tmp, y_tmp = epochs_to_sourcespace(epochs, fwd)
 
-            # save the data
-            np.save(recording_outpath / "X.npy", X)
-            np.save(recording_outpath / "y.npy", y)
+            if idx = 0:
+                X = X_tmp
+                y = y_tmp
+            else:
+                X = np.concatenate((X, X_tmp))
+                y = np.concatenate((y, y_tmp))
+
+    
+        # save the data
+        np.save(subject_outpath / "X.npy", X)
+        np.save(subject_outpath / "y.npy", y)
         
