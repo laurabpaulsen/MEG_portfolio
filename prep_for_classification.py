@@ -3,7 +3,8 @@ This script loops over all participants and all sessions and prepares the data f
 
 DEV NOTES:
 - [ ] Do we want to morph to "average" brain so we can compare across subjects?
-- [ ] Do we want to parcel the data?
+- [ ] Do we want to parcel the data or choose sources from certain brain areas?
+- [ ] Check that we are doing all the preprocessing we want to be doing lolsss
 """
 
 from pathlib import Path
@@ -24,7 +25,7 @@ def preprocess_data_sensorspace(fif_path:Path):
     raw.resample(250)
 
     # find the events
-    events = mne.find_events(raw, min_duration=0.0002)
+    events = mne.find_events(raw, min_duration=0.02)
 
     # remove channel MEG0422 (bad in all recordings)
     raw.drop_channels(["MEG0422"])
@@ -35,7 +36,6 @@ def preprocess_data_sensorspace(fif_path:Path):
     return epochs
 
 
-
 def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, method='dSPM', label=None, ):
     noise_cov = mne.compute_covariance(epochs, tmax=0.000)
     
@@ -43,9 +43,7 @@ def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, me
 
     stcs = mne.minimum_norm.apply_inverse_epochs(epochs, inv, lambda2, method, label, pick_ori=pick_ori)
     
-    
-    return X, y
-
+    return stcs
 
 
 if __name__ in "__main__":
@@ -55,7 +53,6 @@ if __name__ in "__main__":
     MEG_data_path = Path("/work/834761")
     subjects = ["0115"] # ["0108","0109","0110","0111","0112","0113","0114","0115"]
     recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2',  '004.other_block2', '005.self_block3',  '006.other_block3']
-    morphmap_path = fs_subjects_dir "/morph-maps"
     outpath = path / "data"
 
     # make sure that output folder exists
@@ -84,17 +81,17 @@ if __name__ in "__main__":
             stcs = epochs_to_sourcespace(epochs, fwd)
 
             # morph subject path
-            morph_subject_path = fs_subjects_dir / f"fsaverage-{subject}-morph.fif"
+            morph_subject_path = fs_subjects_dir / subject / "bem" / f"{subject}-oct-6-src-morph.h5"
 
             # read
             morph = mne.read_source_morph(morph_subject_path)
 
             # morph
-            stcs = morph.apply(stcs)
+            stcs = [morph.apply(stc) for stc in stcs]
             
 
-            X = np.array([stc.data for stc in stcs])
-            y = epochs.events[:, -1]
+            X_tmp = np.array([stc.data for stc in stcs])
+            y_tmp = epochs.events[:, -1]
 
 
             if idx == 0:
