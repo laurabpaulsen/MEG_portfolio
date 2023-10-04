@@ -43,17 +43,20 @@ def preprocess_data(fif_path:Path):
 
 
 if __name__ in "__main__":
+    path = Path(__file__).parent
+
     MEG_data_path = Path("/work/834761")
-    subjects = "0115"
+    subjects = ["0115"]
     subject_folder = "20230928_000000"
     recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2',  '004.other_block2', '005.self_block3',  '006.other_block3']
 
+    outpath = path / "data"
+
     for subject in subjects:
         subject_path = MEG_data_path / subject
-
         # find the folder with MEG data and not the folder with MRI data
-        subject_meg_path = list(subject_path.glob("000000"))[0]
+        subject_meg_path = list(subject_path.glob("*_000000"))[0]
 
         for recording_name in recording_names:
             fif_file_path = list((subject_meg_path / "MEG" / recording_name / "files").glob("*.fif"))[0]
-            print(fif_file_path)
+            X, y = preprocess_data(fif_file_path)
