@@ -36,16 +36,14 @@ def preprocess_data_sensorspace(fif_path:Path):
 
 
 
-def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, method='dSPM', label=None):
+def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, method='dSPM', label=None, ):
     noise_cov = mne.compute_covariance(epochs, tmax=0.000)
     
     inv = mne.minimum_norm.make_inverse_operator(epochs.info, fwd, noise_cov)
 
     stcs = mne.minimum_norm.apply_inverse_epochs(epochs, inv, lambda2, method, label, pick_ori=pick_ori)
-
-    X = np.array([stc.data for stc in stcs])
-    y = epochs.events[:, -1]
-
+    
+    
     return X, y
 
 
@@ -55,9 +53,9 @@ if __name__ in "__main__":
 
     fs_subjects_dir = Path("/work/835482") # path to freesurfer subjects directory
     MEG_data_path = Path("/work/834761")
-    subjects = ["0115"]
-    recording_names = ['001.self_block1',  '002.other_block1']#, '003.self_block2',  '004.other_block2', '005.self_block3',  '006.other_block3']
-
+    subjects = ["0115"] # ["0108","0109","0110","0111","0112","0113","0114","0115"]
+    recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2',  '004.other_block2', '005.self_block3',  '006.other_block3']
+    morphmap_path = "/work/835482/morph-maps/"
     outpath = path / "data"
 
     # make sure that output folder exists
@@ -83,7 +81,16 @@ if __name__ in "__main__":
             fwd_fname = recording_name[4:] + '-oct-6-src-' + '5120-fwd.fif'
             fwd = mne.read_forward_solution(fs_subjects_dir / subject / 'bem' / fwd_fname)
 
-            X_tmp, y_tmp = epochs_to_sourcespace(epochs, fwd)
+            stcs = epochs_to_sourcespace(epochs, fwd)
+
+            # morph subject path
+            fsaverage-0114-morph.fif
+            # read
+            
+
+            X = np.array([stc.data for stc in stcs])
+            y = epochs.events[:, -1]
+
 
             if idx == 0:
                 X = X_tmp
