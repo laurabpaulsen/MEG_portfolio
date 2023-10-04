@@ -9,42 +9,42 @@ import pickle
 session_info = {
     "0115": {
         "self_block1.fif": {
-            "bad_channels": [], 
+            "bad_channels": ["MEG0422"], 
             "tmin": 0, 
             "tmax": 0, 
             "noise_components": []
         },
 
         "other_block1.fif": {
-            "bad_channels": [], 
+            "bad_channels": ["MEG0422"], 
             "tmin": 0, 
             "tmax": 0, 
-            "noise_components": []
+            "noise_components": ["MEG0422"]
         },
 
         "self_block2.fif": {
-            "bad_channels": [], 
+            "bad_channels": ["MEG0422"], 
             "tmin": 0, 
             "tmax": 0, 
             "noise_components": []
         },
 
         "other_block2.fif": {
-            "bad_channels": [], 
+            "bad_channels": ["MEG0422"], 
             "tmin": 0, 
             "tmax": 0, 
             "noise_components": []
         },
 
         "self_block3.fif": {
-            "bad_channels": [], 
+            "bad_channels": ["MEG0422"], 
             "tmin": 0, 
             "tmax": 0, 
             "noise_components": []
         },
 
         "other_block3.fif": {
-            "bad_channels": [], 
+            "bad_channels": ["MEG0422"], 
             "tmin": 0, 
             "tmax": 0, 
             "noise_components": []
