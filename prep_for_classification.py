@@ -8,13 +8,13 @@ import numpy as np
 
 
 def preprocess_data_sensorspace(fif_path:Path):
-    raw = mne.io.read_raw_fif(fif_path)
+    raw = mne.io.read_raw_fif(fif_path, preload = True)
 
     # projecting out the empty room noise
     raw.apply_proj()
 
     # filtering
-    raw.filter(None, 40)
+    raw.filter(None, 40, n_jobs = 4)
 
     # downsampling
     raw.resample(250)
@@ -25,11 +25,10 @@ def preprocess_data_sensorspace(fif_path:Path):
     # remove channel MEG0422
     raw.drop_channels(["MEG0422"])
 
-    # reject
-    reject = dict(eeg=100e-6)
+
 
     # epoching
-    epochs = mne.Epochs(raw, events, tmin=-0.2, tmax=1, baseline=(None, 0), reject=reject, preload=True)
+    epochs = mne.Epochs(raw, events, tmin=-0.2, tmax=1, baseline=(None, 0))
 
     return epochs
 
@@ -79,12 +78,12 @@ if __name__ in "__main__":
             epochs = preprocess_data_sensorspace(fif_file_path)
 
             # load forward solution
-            fwd_fname = recording_name[4:] + '-oct-6-src-' / '5120-fwd.fif'
+            fwd_fname = recording_name[4:] + '-oct-6-src-' + '5120-fwd.fif'
             fwd = mne.read_forward_solution(fs_subjects_dir / subject / 'bem' / fwd_fname)
 
             X_tmp, y_tmp = epochs_to_sourcespace(epochs, fwd)
 
-            if idx = 0:
+            if idx == 0:
                 X = X_tmp
                 y = y_tmp
             else:
