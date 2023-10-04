@@ -1,14 +1,15 @@
-# create env uisng venv
-python3 -m venv env 
+#!/bin/bash
 
-# activate env
-source ./env/bin/activate
+# Get the directory of the Bash script
+scriptDir=$(dirname -- "$(readlink -f -- "$BASH_SOURCE")")
 
-python -m pip install ipykernel
-python -m ipykernel install --user --name=env
-echo Done!
+# Create a virtual environment in the same directory as the script
+python -m venv "$scriptDir/env"
 
-python -m pip install --upgrade pip
+# Activate the virtual environment
+source "$scriptDir/env/bin/activate"
 
-# install requirements
-python -m pip install -r requirements.txt
+# Install requirements from the same directory as the script
+python -m pip install -r "$scriptDir/requirements.txt"
+
+echo "Done!"
