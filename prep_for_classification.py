@@ -25,7 +25,7 @@ def preprocess_data_sensorspace(fif_path:Path):
     raw.resample(250)
 
     # find the events
-    events = mne.find_events(raw, min_duration=0.02)
+    events = mne.find_events(raw, min_duration=0.002)
 
     # remove channel MEG0422 (bad in all recordings)
     raw.drop_channels(["MEG0422"])
