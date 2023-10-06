@@ -323,14 +323,14 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [4, 12, 21]
         },
 
         "002.other_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": ["MEG0422"]
+            "noise_components": [4, 11, 15]
         },
 
         "003.self_block2": {
