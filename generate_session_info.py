@@ -344,7 +344,7 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [5, 12, 17]
         },
         "005.self_block3": {
             "bad_channels": ["MEG0422"], 
