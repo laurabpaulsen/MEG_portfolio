@@ -44,6 +44,7 @@ def run_ICA_on_session(filepath:Path, outpath:Path, bad_channels:list, tmin:floa
     # marking the channels as bad
     raw.info['bads'] = bad_channels
 
+    # crops out the noise associated with turning on continuous HPI 
     cropped = raw.copy().crop(tmin = tmin, tmax = tmax)
     del raw
 
