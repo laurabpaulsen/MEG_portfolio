@@ -65,7 +65,7 @@ def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, me
 
 
 if __name__ in "__main__":
-    path = Path(__file__).parent
+    path = Path(__file__).parents[1]
 
     fs_subjects_dir = Path("/work/835482") # path to freesurfer subjects directory
     MEG_data_path = Path("/work/834761")
