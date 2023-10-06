@@ -8,274 +8,355 @@ import json
 session_info = {
     "0115": {
         "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 200e-6},
-        "self_block1.fif": {
+        "001.self_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block1.fif": {
+        "002.other_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": ["MEG0422"]
         },
 
-        "self_block2.fif": {
+        "003.self_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block2.fif": {
+        "004.other_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "self_block3.fif": {
+        "005.self_block3": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block3.fif": {
+        "006.other_block3": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
     },
 
     "0114": {
         "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 300e-6},
-        "self_block1.fif": {
+        "001.self_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block1.fif": {
+        "002.other_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": ["MEG0422"]
         },
 
-        "self_block2.fif": {
+        "003.self_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block2.fif": {
+        "004.other_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "self_block3.fif": {
+        "005.self_block3": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block3.fif": {
+        "006.other_block3": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
     },
     "0113":{
         "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 400e-6},
-        "self_block1.fif": {
+        "001.self_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block1.fif": {
+        "002.other_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": ["MEG0422"]
         },
 
-        "self_block2.fif": {
+        "003.self_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block2.fif": {
+        "004.other_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+
+        "005.self_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+
+        "006.other_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
     },
 
     "0112":{
         "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 400e-6},
-        "self_block1.fif": {
+        "001.self_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block1.fif": {
+        "002.other_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": ["MEG0422"]
         },
 
-        "self_block2.fif": {
+        "003.self_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block2.fif": {
+        "004.other_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+
+        "005.self_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+
+        "006.other_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
     },
 
     "0111":{
         "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 500e-6},
-        "self_block1.fif": {
+        "001.self_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block1.fif": {
+        "002.other_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": ["MEG0422"]
         },
 
-        "self_block2.fif": {
+        "003.self_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block2.fif": {
+        "004.other_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+        "005.self_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+
+        "006.other_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
     },
     "0110":{
         "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 300e-6},
-        "self_block1.fif": {
+        "001.self_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block1.fif": {
+        "002.other_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": ["MEG0422"]
         },
 
-        "self_block2.fif": {
+        "003.self_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block2.fif": {
+        "004.other_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+        "005.self_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+
+        "006.other_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
     },
 
     "0109":{
         "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 400e-6},
-        "self_block1.fif": {
+        "001.self_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block1.fif": {
+        "002.other_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": ["MEG0422"]
         },
 
-        "self_block2.fif": {
+        "003.self_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block2.fif": {
+        "004.other_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+
+        "005.self_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+
+        "006.other_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
     },
 
     "0108":{
         "reject": {"mag": 3000e-15, "grad": 3000e-13, "eog": 400e-6},
-        "self_block1.fif": {
+        "001.self_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block1.fif": {
+        "002.other_block1": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": ["MEG0422"]
         },
 
-        "self_block2.fif": {
+        "003.self_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
 
-        "other_block2.fif": {
+        "004.other_block2": {
             "bad_channels": ["MEG0422"], 
-            "tmin": 0, 
-            "tmax": 0, 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+        "005.self_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
+            "noise_components": []
+        },
+
+        "006.other_block3": {
+            "bad_channels": ["MEG0422"], 
+            "tmin": 15, 
+            "tmax": None, 
             "noise_components": []
         },
     }
