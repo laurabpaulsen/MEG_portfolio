@@ -15,7 +15,7 @@ import mne
 import json
 from pathlib import Path
 
-def run_ICA_on_session(filepath, outpath, bad_channels, tmin, tmax):
+def run_ICA_on_session(filepath:Path, outpath:Path, bad_channels:list, tmin:float, tmax:float):
     # loading in the raw data
     raw = mne.io.read_raw_fif(filepath, on_split_missing = 'ignore');
     raw.load_data();
