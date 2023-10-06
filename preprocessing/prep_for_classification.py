@@ -30,7 +30,7 @@ import numpy as np
 import json
 
 
-def preprocess_data_sensorspace(fif_path:Path, reject = None):
+def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None):
     raw = mne.io.read_raw_fif(fif_path, preload = True)
 
     # projecting out the empty room noise
@@ -45,8 +45,8 @@ def preprocess_data_sensorspace(fif_path:Path, reject = None):
     # find the events
     events = mne.find_events(raw, min_duration=2/raw.info["sfreq"])
 
-    # remove channel MEG0422 (bad in pretty much all recordings)
-    raw.drop_channels(["MEG0422"])
+    # remove bad channels
+    raw.drop_channels(bad_channels)
 
     # epoching
     epochs = mne.Epochs(raw, events, tmin=-0.2, tmax=1, baseline=(None, 0), preload = True, reject = reject)
@@ -84,8 +84,8 @@ if __name__ in "__main__":
 
 
     for subject in subjects:
-        reject = session_info[subject]["reject"]
-        print(reject)
+        subject_info = session_info[subject]
+        reject = subject_info["reject"]
 
         subject_path = MEG_data_path / subject
         # find the folder with MEG data and not the folder with MRI data
@@ -98,8 +98,13 @@ if __name__ in "__main__":
             subject_outpath.mkdir(parents=True)
 
         for idx, recording_name in enumerate(recording_names):
+            subject_session_info = subject_info[recording_name]
+
             fif_file_path = list((subject_meg_path / "MEG" / recording_name / "files").glob("*.fif"))[0]
-            epochs = preprocess_data_sensorspace(fif_file_path, reject)
+
+            #ADD REMOVING NOISY ICA COMPONENTS
+
+            epochs = preprocess_data_sensorspace(fif_file_path, reject, subject_session_info["bad_channels"])
 
             # load forward solution
             fwd_fname = recording_name[4:] + '-oct-6-src-' + '5120-fwd.fif'
