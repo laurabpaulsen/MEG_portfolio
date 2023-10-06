@@ -1,18 +1,6 @@
 """
 This script loops over all participants and all sessions and prepares the data for classification analysis.
 
-DEV NOTES:
-- [ ] different tresholds reject - subject 0109 + 0111 + 0112   so many epochs are dropped
-- [ ] read in pickle file with reject criteria
-
-
-
-QUESTIONS FOR LAU
-- Seems like you did not apply the projections in preparing X? Any reason for this? Maybe it does not matter for ML but does for ERF's and such?
-- Q: Does it matter a lot with bad channels. A: Yes but for the purpose of this assignment it is important
-
-
-
 TRIGGER CODES:
 'IMG_PS': 11
 'IMG_PO': 21 
@@ -31,6 +19,26 @@ import json
 
 
 def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None, ica_path:Path = None, noise_components = None):
+    """
+    
+    Parameters
+    ----------
+    fif_path : Path
+        Path to the fif file.
+    bad_channels : list
+        List of bad channels.
+    reject : dict, optional
+        Reject dictionary. The default is None.
+    ica_path : Path, optional
+        Path to the ICA file. The default is None.
+    noise_components : list, optional
+        List of noise ICA components. The default is None.
+    
+    Returns
+    -------
+    epochs : mne.Epochs
+        Epochs object.
+    """
     raw = mne.io.read_raw_fif(fif_path, preload = True)
 
     # projecting out the empty room noise
@@ -64,6 +72,27 @@ def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None,
 
 
 def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, method='dSPM', label=None):
+    """
+    Parameters
+    ----------
+    epochs : mne.Epochs
+        Epochs object.
+    fwd : mne.Forward
+        Forward solution.
+    pick_ori : str, optional
+        Orientation of the inverse solution. The default is 'normal'.
+    lambda2 : float, optional
+        Regularization parameter. The default is 1.0 / 9.0.
+    method : str, optional
+        Inverse method. The default is 'dSPM'.
+    label : mne.Label, optional
+        Label to restrict the inverse solution to. The default is None.
+    
+    Returns
+    -------
+    stcs : list
+        List of source time courses.
+    """
     noise_cov = mne.compute_covariance(epochs, tmax=0.000)
     
     inv = mne.minimum_norm.make_inverse_operator(epochs.info, fwd, noise_cov)
@@ -71,6 +100,36 @@ def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, me
     stcs = mne.minimum_norm.apply_inverse_epochs(epochs, inv, lambda2, method, label, pick_ori=pick_ori)
     
     return stcs
+
+def morph_stcs_label(morph_path:Path, stcs:list, fs_subjects_dir:Path, label_regexp:str = 'parsopercularis-lh'):
+    """
+    Parameters
+    ----------
+    morph_path : Path
+        Path to the morph file.
+    stcs : list
+        List of source time courses to morph.
+    fs_subjects_dir : Path
+        Path to the freesurfer subjects directory.
+    label_regexp : str, optional
+        Regular expression to select the label. The default is 'parsopercularis-lh'.
+    
+    Returns
+    -------
+    X : np.array
+        Array with source time courses.
+    """
+    morph = mne.read_source_morph(morph_path)
+            
+    # morph from subject to fsaverage
+    stcs = [morph.apply(stc) for stc in stcs]
+
+    label = mne.read_labels_from_annot("fsaverage", parc="aparc", subjects_dir=fs_subjects_dir, regexp=label_regexp)[0]
+    vertices = label.get_vertices_used(stcs[0].vertices[0]) # get sources from the data that are within the label
+            
+    X = np.array([stc.data[vertices, :] for stc in stcs])
+
+    return X
 
 
 if __name__ in "__main__":
@@ -99,6 +158,7 @@ if __name__ in "__main__":
         reject = subject_info["reject"]
 
         subject_path = MEG_data_path / subject
+        
         # find the folder with MEG data and not the folder with MRI data
         subject_meg_path = list(subject_path.glob("*_000000"))[0]
 
@@ -121,21 +181,13 @@ if __name__ in "__main__":
             fwd_fname = recording_name[4:] + '-oct-6-src-' + '5120-fwd.fif'
             fwd = mne.read_forward_solution(fs_subjects_dir / subject / 'bem' / fwd_fname)
 
+            # get source time courses
             stcs = epochs_to_sourcespace(epochs, fwd)
 
-            # morph subject path
-            morph_subject_path = fs_subjects_dir / subject / "bem" / f"{subject}-oct-6-src-morph.h5"
-            morph = mne.read_source_morph(morph_subject_path)
-            
             # morph from subject to fsaverage
-            stcs = [morph.apply(stc) for stc in stcs]
-
-            label = mne.read_labels_from_annot("fsaverage", parc="aparc", subjects_dir=fs_subjects_dir, regexp='parsopercularis-lh')[0] # CHECK THAT THIS LABEL IS ACTUALLY BROCAS
-            vertices = label.get_vertices_used(stcs[0].vertices[0]) # get sources from the data that are within the label
-            
-            X_tmp = np.array([stc.data[vertices, :] for stc in stcs])
+            morph_subject_path = fs_subjects_dir / subject / "bem" / f"{subject}-oct-6-src-morph.h5"
+            X_tmp = morph_stcs_label(morph_subject_path, stcs, fs_subjects_dir)
             y_tmp = epochs.events[:, -1]
-
 
             if idx == 0:
                 X = X_tmp
