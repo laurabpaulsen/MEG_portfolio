@@ -100,7 +100,7 @@ if __name__ == '__main__':
             fif_file_path = list((subject_meg_path / "MEG" / recording_name / "files").glob("*.fif"))[0]
             
             run_ICA_on_session(filepath = fif_file_path, 
-                               outpath = subject_outpath / recording_name / "'-ica.fif'", 
+                               outpath = subject_outpath / f"{recording_name}-ica.fif", 
                                bad_channels = subject_session_info["bad_channels"], 
                                tmin = subject_session_info["tmin"], 
                                tmax = subject_session_info["tmax"]
