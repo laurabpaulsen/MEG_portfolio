@@ -5,8 +5,14 @@ Portfolio assignment for advanced cognitive neuroscience (F2023)
 
 ## Overview
 ```
-├── data ................................ Not included in repo
-├── ICA ................................ Not included in repo
+├── data ............................... Not included in repo
+│   ├── 0108
+│   ├── 0109
+│   └── ...
+├── ICA ................................ Not included in repo 
+│   ├── 0108
+│   ├── 0109
+│   └── ...
 ├── preprocessing
 │   ├── check_ica.ipynb ................ Notebook for checking ICA components
 │   ├── prep_for_classification.py ..... Preprocessing data for classification
