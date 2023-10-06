@@ -30,7 +30,7 @@ import numpy as np
 import json
 
 
-def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None):
+def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None, ica_path:Path = None, noise_components = None):
     raw = mne.io.read_raw_fif(fif_path, preload = True)
 
     # projecting out the empty room noise
@@ -38,6 +38,15 @@ def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None)
 
     # Low pass filtering to get rid of line noise
     raw.filter(None, 40, n_jobs = 4)
+
+    if ica_path:
+        ica = mne.preprocessing.read_ica(ica_path)
+
+        # remove noise components
+        ica.exclude = noise_components
+
+        # apply ica
+        ica.apply(raw)
 
     # downsampling to 250 hz (from 1000 hz)
     raw.resample(250)
@@ -74,6 +83,8 @@ if __name__ in "__main__":
     outpath = path / "data"
     fwd_fsaverage_path = fs_subjects_dir / "fsaverage" / "bem" / "fsaverage-oct-6-src.fif"
 
+    ICA_path = path / "ICA"
+
     # load session information with reject criterion
     with open(path / 'session_info.txt', 'r') as f:
         file = f.read()
@@ -102,9 +113,9 @@ if __name__ in "__main__":
 
             fif_file_path = list((subject_meg_path / "MEG" / recording_name / "files").glob("*.fif"))[0]
 
-            #ADD REMOVING NOISY ICA COMPONENTS
+            ICA_path_sub = ICA_path / subject / f"{recording_name}-ica.fif"
 
-            epochs = preprocess_data_sensorspace(fif_file_path, reject, subject_session_info["bad_channels"])
+            epochs = preprocess_data_sensorspace(fif_file_path, reject, subject_session_info["bad_channels"], ICA_path_sub, subject_session_info["noise_components"])
 
             # load forward solution
             fwd_fname = recording_name[4:] + '-oct-6-src-' + '5120-fwd.fif'
