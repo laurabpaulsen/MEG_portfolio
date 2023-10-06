@@ -16,6 +16,26 @@ import json
 from pathlib import Path
 
 def run_ICA_on_session(filepath:Path, outpath:Path, bad_channels:list, tmin:float, tmax:float):
+    """
+    Runs ICA on a single session and saves the ICA solution to a file.
+
+    Parameters
+    ----------
+    filepath : Path
+        Path to the raw fif file.
+    outpath : Path
+        Path to save the ICA solution to.
+    bad_channels : list
+        List of channels to mark as bad.
+    tmin : float
+        Start time of the recording (in seconds).
+    tmax : float
+        End time of the recording (in seconds).
+    
+    Returns
+    -------
+    None.
+    """
     # loading in the raw data
     raw = mne.io.read_raw_fif(filepath, on_split_missing = 'ignore');
     raw.load_data();
@@ -35,7 +55,6 @@ def run_ICA_on_session(filepath:Path, outpath:Path, bad_channels:list, tmin:floa
     resampled_raw = filt_raw.copy().resample(250)
     del filt_raw
 
-
     ### ICA ###
     ica = mne.preprocessing.ICA(n_components=None, random_state=97, method='fastica', max_iter=3000, verbose=None)
     ica.fit(resampled_raw)
@@ -53,29 +72,38 @@ if __name__ == '__main__':
     recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2', '004.other_block2', '005.self_block3',  '006.other_block3']
 
 
-    # load session information with reject criterion
+    # load session information with bad channels and cropping times
     with open(path.parents[1] / 'session_info.txt', 'r') as f:
         file = f.read()
         session_info = json.loads(file)
 
 
-    for subject in subjects:
+    for subject in subjects: # loop over subjects
         subject_info = session_info[subject]
 
         subject_path = MEG_data_path / subject
+        
         # find the folder with MEG data and not the folder with MRI data
         subject_meg_path = list(subject_path.glob("*_000000"))[0]
 
-        # make a folder for the subject
+        # make a folder for the subject to save the ICA files to
         subject_outpath = outpath / subject
 
         if not subject_outpath.exists():
             subject_outpath.mkdir(parents=True)
 
-        for idx, recording_name in enumerate(recording_names):
+        for idx, recording_name in enumerate(recording_names): # loop over recordings
             subject_session_info = subject_info[recording_name]
+            
+            # find the MEG recording file
             fif_file_path = list((subject_meg_path / "MEG" / recording_name / "files").glob("*.fif"))[0]
-            run_ICA_on_session(fif_file_path, subject_outpath / recording_name / "'-ica.fif'", subject_session_info["bad_channels"], subject_session_info["tmin"], subject_session_info["tmax"])
+            
+            run_ICA_on_session(filepath = fif_file_path, 
+                               outpath = subject_outpath / recording_name / "'-ica.fif'", 
+                               bad_channels = subject_session_info["bad_channels"], 
+                               tmin = subject_session_info["tmin"], 
+                               tmax = subject_session_info["tmax"]
+                               )
 
             
 
