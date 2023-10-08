@@ -1,20 +1,7 @@
 """
 This script loops over all participants and all sessions and prepares the data for classification analysis.
 
-TRIGGER CODES:
-
-showing circles
-'IMG_PS': 11
-'IMG_PO': 21 
-'IMG_NS': 12 
-'IMG_NO': 22  
-'IMG_BI': 23
-
-
-responses
-'button_press':202 
-
-all other triggers are a mystery!
+- [ ] Only include the triggers from README when saving data
 
 """
 
@@ -138,7 +125,8 @@ def morph_stcs_label(morph_path:Path, stcs:list, fs_subjects_dir:Path, label_reg
     return X
 
 
-if __name__ in "__main__":
+
+def main():
     path = Path(__file__).parents[1]
 
     fs_subjects_dir = Path("/work/835482") # path to freesurfer subjects directory
@@ -209,3 +197,7 @@ if __name__ in "__main__":
         np.save(subject_outpath / "X.npy", X)
         np.save(subject_outpath / "y.npy", y)
         
+
+
+if __name__ in "__main__":
+    main()    
