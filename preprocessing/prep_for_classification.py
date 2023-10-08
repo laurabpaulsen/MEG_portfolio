@@ -138,6 +138,8 @@ def main():
 
     ICA_path = path / "ICA"
 
+
+    label = 'parsopercularis-lh'
     # load session information with reject criterion
     with open(path / 'session_info.txt', 'r') as f:
         file = f.read()
@@ -180,7 +182,7 @@ def main():
 
             # morph from subject to fsaverage
             morph_subject_path = fs_subjects_dir / subject / "bem" / f"{subject}-oct-6-src-morph.h5"
-            X_tmp = morph_stcs_label(morph_subject_path, stcs, fs_subjects_dir)
+            X_tmp = morph_stcs_label(morph_subject_path, stcs, fs_subjects_dir, label)
             y_tmp = epochs.events[:, -1]
 
             if idx == 0:
@@ -194,8 +196,8 @@ def main():
         print(y.shape)
         
         # save the data
-        np.save(subject_outpath / "X.npy", X)
-        np.save(subject_outpath / "y.npy", y)
+        np.save(subject_outpath / f"X_{label}.npy", X)
+        np.save(subject_outpath / f"y_{label}.npy", y)
         
 
 
