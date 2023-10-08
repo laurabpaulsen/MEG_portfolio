@@ -2,13 +2,19 @@
 This script loops over all participants and all sessions and prepares the data for classification analysis.
 
 TRIGGER CODES:
+
+showing circles
 'IMG_PS': 11
 'IMG_PO': 21 
 'IMG_NS': 12 
 'IMG_NO': 22  
----------------
-'IMG_BM': 13
 'IMG_BI': 23
+
+
+responses
+'button_press':202 
+
+all other triggers are a mystery!
 
 """
 
