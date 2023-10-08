@@ -28,14 +28,11 @@ Portfolio assignment for advanced cognitive neuroscience (F2023)
 
 ## Notes
 ### Triggers
-
-showing circles
-'IMG_PS': 11
-'IMG_PO': 21 
-'IMG_NS': 12 
-'IMG_NO': 22  
-'IMG_BI': 23
-
-
-responses
-'button_press':202 
+|       Description        |   Trigger   |
+|------------------|-----------|
+|     IMG_PS       |    11     |
+|     IMG_PO       |    21     |
+|     IMG_NS       |    12     |
+|     IMG_NO       |    22     |
+|     IMG_BI       |    23     |
+|  button_press    |   202     |
