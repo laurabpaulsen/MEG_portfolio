@@ -19,7 +19,7 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": ["MEG0422"]
+            "noise_components": []
         },
 
         "003.self_block2": {
@@ -57,21 +57,21 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [5, 7, 10]
+            "noise_components": []
         },
 
         "002.other_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [4, 6, 9]
+            "noise_components": []
         },
 
         "003.self_block2": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [5, 6, 9]
+            "noise_components": []
         },
 
         "004.other_block2": {
@@ -85,14 +85,14 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [3, 6, 4]
+            "noise_components": []
         },
 
         "006.other_block3": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [5, 7, 8]
+            "noise_components": []
         },
     },
     "0113":{
@@ -108,7 +108,7 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": ["MEG0422"]
+            "noise_components": []
         },
 
         "003.self_block2": {
@@ -153,7 +153,7 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": ["MEG0422"]
+            "noise_components": []
         },
 
         "003.self_block2": {
@@ -198,7 +198,7 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": ["MEG0422"]
+            "noise_components": []
         },
 
         "003.self_block2": {
@@ -234,41 +234,41 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [5, 9, 30]
+            "noise_components": []
         },
 
         "002.other_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [4, 6, 27]
+            "noise_components": []
         },
 
         "003.self_block2": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [4, 6, 24]
+            "noise_components": []
         },
 
         "004.other_block2": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [5, 7, 30]
+            "noise_components": []
         },
         "005.self_block3": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [5, 6] # no eye blink component found
+            "noise_components": []
         },
 
         "006.other_block3": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [4, 7] # no eye blink component found
+            "noise_components": []
         },
     },
 
@@ -285,7 +285,7 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": ["MEG0422"]
+            "noise_components": []
         },
 
         "003.self_block2": {
@@ -323,41 +323,41 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [4, 12, 21]
+            "noise_components": []
         },
 
         "002.other_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [4, 11, 15]
+            "noise_components": []
         },
 
         "003.self_block2": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [5, 7, 18]
+            "noise_components": []
         },
 
         "004.other_block2": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [5, 12, 17]
+            "noise_components": []
         },
         "005.self_block3": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": [4, 8, 16]
+            "noise_components": []
         },
 
         "006.other_block3": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": "LOOKS WEIRD! RUN ICA AGAIN!"
+            "noise_components": []
         },
     }
 

@@ -57,7 +57,7 @@ def run_ICA_on_session(filepath:Path, outpath:Path, bad_channels:list, tmin:floa
     del filt_raw
 
     ### ICA ###
-    ica = mne.preprocessing.ICA(n_components=None, random_state=97, method='fastica', max_iter=3000, verbose=None)
+    ica = mne.preprocessing.ICA(n_components=0.99, random_state=97, method='fastica', max_iter=3000, verbose=True)
     ica.fit(resampled_raw)
 
     # saving the ICA solution
@@ -71,7 +71,6 @@ if __name__ == '__main__':
     MEG_data_path = Path("/work/834761")
     subjects = ["0108", "0109", "0110", "0111", "0112", "0113", "0114", "0115"]
     recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2', '004.other_block2', '005.self_block3',  '006.other_block3']
-
 
     # load session information with bad channels and cropping times
     with open(path.parents[1] / 'session_info.txt', 'r') as f:
