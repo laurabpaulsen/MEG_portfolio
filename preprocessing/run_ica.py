@@ -57,7 +57,7 @@ def run_ICA_on_session(filepath:Path, outpath:Path, bad_channels:list, tmin:floa
     del filt_raw
 
     ### ICA ###
-    ica = mne.preprocessing.ICA(n_components=0.99, random_state=97, method='fastica', max_iter=3000, verbose=True)
+    ica = mne.preprocessing.ICA(n_components=0.999, random_state=97, method='fastica', max_iter=3000, verbose=True)
     ica.fit(resampled_raw)
 
     # saving the ICA solution
