@@ -86,7 +86,7 @@ def main():
                 fif_path = fif_file_path, 
                 bad_channels = subject_session_info["bad_channels"], 
                 reject = subject_info["reject"], 
-                ICA_path = ICA_path_sub, 
+                ica_path = ICA_path_sub, 
                 noise_components = subject_session_info["noise_components"], 
                 event_ids=event_id)
 
