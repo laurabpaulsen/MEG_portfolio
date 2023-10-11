@@ -234,41 +234,41 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [5, 7, 9, 36]
         },
 
         "002.other_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [5, 6, 30]
         },
 
         "003.self_block2": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [4, 6]
         },
 
         "004.other_block2": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [5, 8]
         },
         "005.self_block3": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [5, 9]
         },
 
         "006.other_block3": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [4, 7]
         },
     },
 
@@ -330,14 +330,14 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [4, 8, 16]
         },
 
         "003.self_block2": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [5, 7, 18]
         },
 
         "004.other_block2": {
@@ -350,14 +350,14 @@ session_info = {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [4, 8, 16]
         },
 
         "006.other_block3": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
             "tmax": None, 
-            "noise_components": []
+            "noise_components": [61]
         },
     }
 
