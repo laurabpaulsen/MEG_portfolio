@@ -4,57 +4,9 @@ import mne
 import numpy as np
 import json
 
-
-def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None, ica_path:Path = None, noise_components = None):
-    """
-    
-    Parameters
-    ----------
-    fif_path : Path
-        Path to the fif file.
-    bad_channels : list
-        List of bad channels.
-    reject : dict, optional
-        Reject dictionary. The default is None.
-    ica_path : Path, optional
-        Path to the ICA file. The default is None.
-    noise_components : list, optional
-        List of noise ICA components. The default is None.
-    
-    Returns
-    -------
-    epochs : mne.Epochs
-        Epochs object.
-    """
-    raw = mne.io.read_raw_fif(fif_path, preload = True)
-
-    # projecting out the empty room noise
-    raw.apply_proj()
-
-    # Low pass filtering to get rid of line noise
-    raw.filter(0.1, 40, n_jobs = 4)
-
-    if ica_path:
-        ica = mne.preprocessing.read_ica(ica_path)
-
-        # remove noise components
-        ica.exclude = noise_components
-
-        # apply ica
-        ica.apply(raw)
-
-    # find the events
-    events = mne.find_events(raw, min_duration=2/raw.info["sfreq"])
-
-    # remove bad channels
-    raw.drop_channels(bad_channels)
-
-    # epoching
-    epochs = mne.Epochs(raw, events, tmin=-0.2, tmax=1, baseline=(None, 0), preload = True, reject = reject)
-
-    # downsampling
-    epochs.resample(250)
-    return epochs
+# local imports
+sys.path.append(str(Path(__file__).parents[1]))
+from utils import preprocess_data_sensorspace # NOTE TO PERN MOVED FUNCTION TO UTILS AS IT IS BEING USED IN MULTIPLE SCRIPTS
 
 
 
