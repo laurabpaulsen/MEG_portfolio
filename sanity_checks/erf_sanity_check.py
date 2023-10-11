@@ -32,7 +32,7 @@ def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None,
     raw.apply_proj()
 
     # Low pass filtering to get rid of line noise
-    raw.filter(None, 40, n_jobs = 4)
+    raw.filter(0.1, 40, n_jobs = 4)
 
     if ica_path:
         ica = mne.preprocessing.read_ica(ica_path)
