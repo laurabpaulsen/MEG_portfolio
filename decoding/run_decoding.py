@@ -38,14 +38,14 @@ def balance_class_weights(X, y):
     Parameters
     ----------
     X : array
-        Data array with shape (n_channels, n_trials, n_times)
+        Data array with shape (n_trials, x, x)
     y : array
         Array with shape (n_trials, ) containing several classes
 
     Returns
     -------
     X_equal : array
-        Data array with shape (n_channels, n_trials, n_times) with equal number of trials for each class
+        Data array with shape (n_trials, x, x) with equal number of trials for each class
     y_equal : array
         Array with shape (n_trials, ) containing classes with equal number of trials for each class
 
@@ -59,7 +59,7 @@ def balance_class_weights(X, y):
         random_choices = np.random.choice(index[0], size = counts.min(), replace=False)
         keep_inds.extend(random_choices)
     
-    X_equal = X[:, keep_inds, :]
+    X_equal = X[keep_inds, :, :]
     y_equal = y[keep_inds]
 
     return X_equal, y_equal
@@ -79,9 +79,9 @@ def across_subject(decoder, Xs, ys):
         Label array.
     """
     N, T, S = Xs[0].shape
-    results = np.array((Xs.shape[0], T)) # number of subjects, number of time points
+    results = np.array((len(Xs), T)) # number of subjects, number of time points
 
-    for i in range(Xs):
+    for i in range(len(Xs)):
         X_tmp = Xs.copy()
         X_test = X_tmp.pop(i)
 
@@ -90,6 +90,7 @@ def across_subject(decoder, Xs, ys):
 
         X_train = np.concatenate(X_tmp, axis=0)
         y_train = np.concatenate(y_tmp, axis=0)
+        print(X_train.shape)
 
         # balance class weights
         X_train, y_train = balance_class_weights(X_train, y_train)
@@ -100,12 +101,13 @@ def across_subject(decoder, Xs, ys):
     
     return results
 
+def convert_triggers
 
 if __name__ in "__main__":
 
     path = Path(__file__).parent
 
-    data_path = path / "data"
+    data_path = path.parent / "data"
     outpath = path / "results"
 
     # create output directory if it doesn't exist
@@ -121,8 +123,15 @@ if __name__ in "__main__":
 
     for subject in subjects:
         X, y = read_data(data_path, subject, x_file=f"X_{label}.npy", y_file=f"y_{label}.npy")
-        Xs.append(X)
-        ys.append(y)
+
+        # only keep certain triggers
+        triggerlist = np.array([11, 12])
+        trigger_idx = np.where(np.isin(y, triggerlist))
+
+        
+
+        Xs.append(X[trigger_idx[0], :, :])
+        ys.append(y[trigger_idx[0]])
 
     # run decoding
     decoder = make_pipeline(StandardScaler(), svm.SVC(C=1, kernel='linear', gamma='auto'))
