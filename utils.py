@@ -3,7 +3,7 @@ import mne
 import numpy as np
 from pathlib import Path
 
-def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None, ica_path:Path = None, noise_components = None):
+def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None, ica_path:Path = None, noise_components = None, event_ids = None):
     """
     
     Parameters
@@ -18,6 +18,8 @@ def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None,
         Path to the ICA file. The default is None.
     noise_components : list, optional
         List of noise ICA components. The default is None.
+    event_ids: dict, optional
+        Dictionary with event ids and triggers to include in the epochs. Default is None
     
     Returns
     -------
@@ -26,8 +28,6 @@ def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None,
     """
     raw = mne.io.read_raw_fif(fif_path, preload = True)
 
-    # projecting out the empty room noise
-    raw.apply_proj()
 
     # Low pass filtering to get rid of line noise
     raw.filter(0.1, 40, n_jobs = 4)
@@ -48,7 +48,7 @@ def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None,
     raw.drop_channels(bad_channels)
 
     # epoching
-    epochs = mne.Epochs(raw, events, tmin=-0.2, tmax=1, baseline=(None, 0), preload = True, reject = reject)
+    epochs = mne.Epochs(raw, events, event_id = event_ids, tmin=-0.2, tmax=1, baseline=(None, 0), preload = True, reject = reject, proj = True)
 
     # downsampling
     epochs.resample(250)
