@@ -31,21 +31,39 @@ def read_data(data_path, subject, x_file="X.npy", y_file="y.npy"):
 
     return X, y
     
-
-
-def within_subject_decoding(data_path, outpath, subjects):
-    """Run decoding within subject.
+def balance_class_weights(X, y):
+    """
+    Balances the class weight by removing trials so each class has the same number of trials as the class with the least trials.
 
     Parameters
     ----------
-    data_path : str
-        Path to the data directory.
-    outpath : str
-        Path to the output directory.
-    subjects : list
-        List of subjects to run decoding on.
+    X : array
+        Data array with shape (n_channels, n_trials, n_times)
+    y : array
+        Array with shape (n_trials, ) containing several classes
+
+    Returns
+    -------
+    X_equal : array
+        Data array with shape (n_channels, n_trials, n_times) with equal number of trials for each class
+    y_equal : array
+        Array with shape (n_trials, ) containing classes with equal number of trials for each class
+
     """
-    pass
+    keys, counts = np.unique(y, return_counts = True)
+
+    keep_inds = []
+
+    for key in keys:
+        index = np.where(np.array(y) == key)
+        random_choices = np.random.choice(index[0], size = counts.min(), replace=False)
+        keep_inds.extend(random_choices)
+    
+    X_equal = X[:, keep_inds, :]
+    y_equal = y[keep_inds]
+
+    return X_equal, y_equal
+
 
 def across_subject(decoder, Xs, ys):
     """
@@ -73,6 +91,9 @@ def across_subject(decoder, Xs, ys):
         X_train = np.concatenate(X_tmp, axis=0)
         y_train = np.concatenate(y_tmp, axis=0)
 
+        # balance class weights
+        X_train, y_train = balance_class_weights(X_train, y_train)
+
         for t in range(T):
             decoder.fit(X_train[:, t, :], y_train)
             results[i, t] = decoder.score(X_test[:, t, :], y_test)
@@ -99,7 +120,7 @@ if __name__ in "__main__":
     ys = []
 
     for subject in subjects:
-        X, y = read_data(data_path, subject, x_file="X.npy", y_file="y.npy")
+        X, y = read_data(data_path, subject, x_file=f"X_{label}.npy", y_file=f"y_{label}.npy")
         Xs.append(X)
         ys.append(y)
 
