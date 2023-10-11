@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 import json
 import mne
+import numpy as np
 
 # local imports
 sys.path.append(str(Path(__file__).parents[1]))
