@@ -16,22 +16,30 @@ sys.path.append(str(Path(__file__).parents[1]))
 from utils import preprocess_data_sensorspace, epochs_to_sourcespace, morph_stcs_label
 
 
-
-
 def main():
     path = Path(__file__).parents[1]
 
     fs_subjects_dir = Path("/work/835482") # path to freesurfer subjects directory
     MEG_data_path = Path("/work/834761")
     subjects = ["0108", "0109", "0110", "0111", "0112", "0113", "0114", "0115"]
-    recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2', '004.other_block2', '005.self_block3',  '006.other_block3']
+    recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2', '004.other_block2', '005.self_block3']#  '006.other_block3']
     outpath = path / "data"
     fwd_fsaverage_path = fs_subjects_dir / "fsaverage" / "bem" / "fsaverage-oct-6-src.fif"
-
     ICA_path = path / "ICA"
 
 
     label = 'parsopercularis-lh'
+
+    event_id = {
+        "IMG/PS": 11,
+        "IMG/PO": 21,
+        "IMG/NS": 12,
+        "IMG/NO": 22,
+        "IMG/BI": 23,
+        "button_press": 202
+    }
+
+
     # load session information with reject criterion
     with open(path / 'session_info.txt', 'r') as f:
         file = f.read()
@@ -61,7 +69,26 @@ def main():
 
             ICA_path_sub = ICA_path / subject / f"{recording_name}-ica.fif"
 
-            epochs = preprocess_data_sensorspace(fif_file_path, subject_session_info["bad_channels"], subject_info["reject"], ICA_path_sub, subject_session_info["noise_components"])
+            if 'self' in recording_name:
+                event_id = {
+                    "img/self/positive": 11, 
+                    "img/self/negative": 12, 
+                    "img/button_press": 23,
+                    "response/self": 202}
+            elif 'other' in recording_name: 
+                event_id = {
+                    "img/assigned/positive": 21, 
+                    "img/assigned/negative": 22, 
+                    "img/assigned/button_press": 23,
+                    "response/assigned": 202}
+
+            epochs = preprocess_data_sensorspace(
+                fif_path = fif_file_path, 
+                bad_channels = subject_session_info["bad_channels"], 
+                reject = subject_info["reject"], 
+                ICA_path = ICA_path_sub, 
+                noise_components = subject_session_info["noise_components"], 
+                event_ids=event_id)
 
             # load forward solution
             fwd_fname = recording_name[4:] + '-oct-6-src-' + '5120-fwd.fif'
