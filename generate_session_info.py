@@ -354,10 +354,10 @@ session_info = {
         },
 
         "006.other_block3": {
-            "bad_channels": ["MEG0422"], 
-            "tmin": 15, 
-            "tmax": None, 
-            "noise_components": [61]
+            "bad_channels": ["MEG0422", "MEG1312"], 
+            "tmin": 24, 
+            "tmax": 360, 
+            "noise_components": [20, 4, 5]
         },
     }
 
