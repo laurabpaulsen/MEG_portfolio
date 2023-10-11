@@ -46,7 +46,7 @@ if __name__ in "__main__":
 
             ICA_path_sub = ICA_path / subject / f"{recording_name}-ica.fif"
 
-            epochs = preprocess_data_sensorspace(fif_file_path, reject, subject_session_info["bad_channels"], ICA_path_sub, subject_session_info["noise_components"])
+            epochs = preprocess_data_sensorspace(fif_file_path, subject_session_info["bad_channels"], reject, ICA_path_sub, subject_session_info["noise_components"])
 
             # plot hurra
 
