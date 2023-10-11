@@ -101,7 +101,35 @@ def across_subject(decoder, Xs, ys):
     
     return results
 
-def convert_triggers
+def convert_y_triggers(y, zero = [], one = []):
+    """
+    Converts triggers to 0 and 1.
+
+    Parameters
+    ----------
+    zero : list
+        List of triggers to convert to 0.
+    one : list
+        List of triggers to convert to 1.
+    
+    Returns
+    -------
+    y : array
+        Array with shape (n_trials, ) containing 0 and 1.
+    """
+    y_new = np.zeros(len(y))
+
+    for i in range(len(y)):
+        if y[i] in zero:
+            y_new[i] = 0
+        elif y[i] in one:
+            y_new[i] = 1
+        else:
+            y_new[i] = np.nan
+    
+    return y_new
+
+
 
 if __name__ in "__main__":
 
@@ -128,10 +156,15 @@ if __name__ in "__main__":
         triggerlist = np.array([11, 12])
         trigger_idx = np.where(np.isin(y, triggerlist))
 
-        
+        X = X[trigger_idx[0], :, :]
+        y = y[trigger_idx[0]]
 
-        Xs.append(X[trigger_idx[0], :, :])
-        ys.append(y[trigger_idx[0]])
+        # convert triggers to 0 and 1
+        y = convert_y_triggers(y, zero = [11], one = [12])
+
+
+        Xs.append(X)
+        ys.append(y)
 
     # run decoding
     decoder = make_pipeline(StandardScaler(), svm.SVC(C=1, kernel='linear', gamma='auto'))
