@@ -43,9 +43,6 @@ def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None,
         # apply ica
         ica.apply(raw)
 
-    # downsampling to 250 hz (from 1000 hz)
-    raw.resample(250)
-
     # find the events
     events = mne.find_events(raw, min_duration=2/raw.info["sfreq"])
 
@@ -55,6 +52,8 @@ def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None,
     # epoching
     epochs = mne.Epochs(raw, events, tmin=-0.2, tmax=1, baseline=(None, 0), preload = True, reject = reject)
 
+    # downsampling
+    epochs.resample(250)
     return epochs
 
 
