@@ -95,7 +95,7 @@ def main():
             # get source time courses
             stcs, inv = epochs_to_sourcespace(epochs, fwd, return_inv=True)
 
-            labels_parc = mne.read_labels_from_annot(subject, parc="aparc", subjects_dir=fs_subjects_dir, regexp="lh")
+            labels_parc = mne.read_labels_from_annot(subject, parc="aparc.a2009s", subjects_dir=fs_subjects_dir, regexp="lh")
             stcs_parc = mne.extract_label_time_course(stcs, labels_parc, inv["src"], mode='pca_flip')
 
             X_tmp = np.array([stc.data for stc in stcs_parc])
