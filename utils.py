@@ -56,7 +56,7 @@ def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None,
     return epochs
 
 
-def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, method='dSPM', label=None):
+def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, method='dSPM', label=None, return_inv = False):
     """
     Parameters
     ----------
@@ -83,9 +83,11 @@ def epochs_to_sourcespace(epochs, fwd,  pick_ori='normal', lambda2=1.0 / 9.0, me
     inv = mne.minimum_norm.make_inverse_operator(epochs.info, fwd, noise_cov)
 
     stcs = mne.minimum_norm.apply_inverse_epochs(epochs, inv, lambda2, method, label, pick_ori=pick_ori)
+    if return_inv:
+        return stcs, inv
     
-    return stcs
-
+    else:
+        return stcs
 def morph_stcs_label(morph_path:Path, stcs:list, fs_subjects_dir:Path, label_regexp:str = 'parsopercularis-lh'):
     """
     Parameters
@@ -115,3 +117,44 @@ def morph_stcs_label(morph_path:Path, stcs:list, fs_subjects_dir:Path, label_reg
     X = np.array([stc.data[vertices, :] for stc in stcs])
 
     return X
+
+
+ 
+def flip_sign(X1, X2):
+    """
+    This function is used to flip the sign of the data in X2 if the correlation between the data in X1 and X2 is negative.
+
+    Parameters
+    ----------
+    X1 (array): 
+        Data from the session to compare to with shape (n_channels, n_trials, n_times)
+        
+    X2 (array): 
+        Data from the session to flip the sign of with shape (n_channels, n_trials, n_times)
+
+    Returns
+    -------
+    X2 (ndarray): 
+        X2 with the sign flipped if the correlation between X1 and X2 is negative in the given parcel with shape (n_channels, n_trials, n_times)
+    """
+
+    # checking that the T and P dimensions are the same
+    if X1.shape[0] != X2.shape[0]:
+        raise ValueError('The number of time points in the two sessions are not the same')
+    
+    if X1.shape[2] != X2.shape[2]:
+        raise ValueError('The number of parcels in the two sessions are not the same')
+
+    # loop over parcels
+    for i in range(X1.shape[2]):
+        # take means over trials
+        mean1 = np.mean(X1[:, :, i], axis = 1)
+        mean2 = np.mean(X2[:, :, i], axis = 1)
+
+        # calculate correlation
+        corr = np.corrcoef(mean1, mean2)[0, 1]
+
+        if corr < 0: # if correlation is negative, flip sign
+            X2[:, :, i] = X2[:, :, i] * -1
+
+    return X2
