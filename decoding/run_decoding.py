@@ -132,11 +132,10 @@ def within_subject(decoder, X, y, ncv = 10):
         Array with shape (n_timepoints, ) containing decoding results for each timepoint.
     """
 
-    N, S, T = X.shape # ntrials, nsources, ntimepoints
-    results = np.zeros(T) # number of time points
-
     # balance class weights
     X, y = balance_class_weights(X, y)
+
+    N, S, T = X.shape # ntrials, nsources, ntimepoints
 
     # making array with all the indices of y for cross validation
     inds = np.array(range(N))
@@ -147,15 +146,14 @@ def within_subject(decoder, X, y, ncv = 10):
     for c in range(ncv):
         inds_cv_test = inds[int(len(inds)/ncv) * c : int(len(inds)/ncv)*(c+1)]
         X_test = X[inds_cv_test, :, :]
-        X_train = np.delete(X, inds_cv_test, axis=0)
+        X_train = np.delete(X.copy(), inds_cv_test, axis=0)
         y_test = y[inds_cv_test]
-        y_train = np.delete(y, inds_cv_test)
+        y_train = np.delete(y.copy(), inds_cv_test)
 
         for t in tqdm(range(T), desc = "timepoint"):
             decoder.fit(X_train[:, :, t], y_train)
             results[t, c] = decoder.score(X_test[:, :, t], y_test)
         
-    
     return results
 
 def keep_triggers(X, y, zero = [], one = []):
@@ -230,8 +228,11 @@ if __name__ in "__main__":
 
     # run within subject decoding
     for i, (X, y) in tqdm(enumerate(zip(Xs, ys))):
-        results = within_subject(decoder, X, y, ncv = 5)
-        np.save(outpath / f"within_subject_{i+1}_11_12.npy", results)
+        if i==0:
+            pass
+        else:
+            results = within_subject(decoder, X, y, ncv = 5)
+            np.save(outpath / f"within_subject_{i+1}_11_12.npy", results)
     
     # run across subject decoding
     #results = across_subject(decoder, Xs, ys)
