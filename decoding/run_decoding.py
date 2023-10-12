@@ -7,6 +7,8 @@ import numpy as np
 from sklearn import svm
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+import multiprocessing
+from tqdm import tqdm
 
 def read_data(data_path, subject, x_file="X.npy", y_file="y.npy"):
     """Read in data for a given subject.
@@ -78,10 +80,10 @@ def across_subject(decoder, Xs, ys):
     ys : array
         Label array.
     """
-    N, T, S = Xs[0].shape
-    results = np.array((len(Xs), T)) # number of subjects, number of time points
+    N, S, T = Xs[0].shape
+    results = np.zeros((len(Xs), T)) # number of subjects, number of time points
 
-    for i in range(len(Xs)):
+    for i in tqdm(range(len(Xs)), desc = "Leaving out data from subject for testing"):
         X_tmp = Xs.copy()
         X_test = X_tmp.pop(i)
 
@@ -90,20 +92,21 @@ def across_subject(decoder, Xs, ys):
 
         X_train = np.concatenate(X_tmp, axis=0)
         y_train = np.concatenate(y_tmp, axis=0)
-        print(X_train.shape)
 
         # balance class weights
         X_train, y_train = balance_class_weights(X_train, y_train)
 
-        for t in range(T):
-            decoder.fit(X_train[:, t, :], y_train)
-            results[i, t] = decoder.score(X_test[:, t, :], y_test)
+        for t in tqdm(range(T), desc = "timepoint"):
+            decoder.fit(X_train[:, :, t], y_train)
+            results[i, t] = decoder.score(X_test[:, :, t], y_test)
     
     return results
 
-def convert_y_triggers(y, zero = [], one = []):
+
+
+def keep_triggers(X, y, zero = [], one = []):
     """
-    Converts triggers to 0 and 1.
+    Only keeps specified triggers and converts them to 0 and 1.
 
     Parameters
     ----------
@@ -114,9 +117,19 @@ def convert_y_triggers(y, zero = [], one = []):
     
     Returns
     -------
+    X : array
+        Array with shape (n_trials, , )
     y : array
         Array with shape (n_trials, ) containing 0 and 1.
     """
+    # only keep certain triggers
+    print(zero + one)
+    trigger_idx = np.where(np.isin(y, zero + one))
+
+    X = X[trigger_idx[0], :, :]
+    y = y[trigger_idx[0]]
+
+
     y_new = np.zeros(len(y))
 
     for i in range(len(y)):
@@ -124,10 +137,8 @@ def convert_y_triggers(y, zero = [], one = []):
             y_new[i] = 0
         elif y[i] in one:
             y_new[i] = 1
-        else:
-            y_new[i] = np.nan
     
-    return y_new
+    return X, y_new
 
 
 
@@ -152,16 +163,8 @@ if __name__ in "__main__":
     for subject in subjects:
         X, y = read_data(data_path, subject, x_file=f"X_{label}.npy", y_file=f"y_{label}.npy")
 
-        # only keep certain triggers
-        triggerlist = np.array([11, 12])
-        trigger_idx = np.where(np.isin(y, triggerlist))
-
-        X = X[trigger_idx[0], :, :]
-        y = y[trigger_idx[0]]
-
-        # convert triggers to 0 and 1
-        y = convert_y_triggers(y, zero = [11], one = [12])
-
+        # only keep data from certain triggers and convert y to zero and ones
+        X, y = keep_triggers(X, y, zero = [11], one = [12])
 
         Xs.append(X)
         ys.append(y)
@@ -171,7 +174,7 @@ if __name__ in "__main__":
     results = across_subject(decoder, Xs, ys)
 
     # save results
-    np.save(outpath / "across_subjects.npy", results)
+    np.save(outpath / "across_subjects_11_12.npy", results)
 
 
     
