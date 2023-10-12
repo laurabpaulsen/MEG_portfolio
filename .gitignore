@@ -162,3 +162,5 @@ cython_debug/
 data/*
 ICA/*
 ICA_old/*
+
+*.npy
