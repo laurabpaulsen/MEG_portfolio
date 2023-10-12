@@ -227,9 +227,9 @@ if __name__ in "__main__":
     decoder = make_pipeline(StandardScaler(), naive_bayes.GaussianNB())
 
     # run across subject decoding
-    #results = across_subject(decoder, Xs, ys)
+    results = across_subject(decoder, Xs, ys)
     # save results
-    #np.save(outpath / f"across_subjects_11_202_{label}.npy", results)
+    np.save(outpath / f"across_subjects_11_202_{label}.npy", results)
 
 
     # run within subject decoding

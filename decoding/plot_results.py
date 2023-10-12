@@ -51,7 +51,7 @@ if __name__ in "__main__":
     # create output directory if it doesn't exist
     if not outpath.exists():
         outpath.mkdir()
-    """
+
     acc = np.load(results_path / f"across_subjects_11_202_{label}.npy")
 
     plot_decoding_accuracy(
@@ -60,7 +60,7 @@ if __name__ in "__main__":
         legend_title = "Test subject",
         savepath = outpath / f"across_subjects_11_202_{label}.png"
         )
-    """
+
 
     within_subject = []
     for i in range(1, 9):
