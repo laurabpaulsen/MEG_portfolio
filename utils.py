@@ -127,10 +127,10 @@ def flip_sign(X1, X2):
     Parameters
     ----------
     X1 (array): 
-        Data from the session to compare to with shape (n_channels, n_trials, n_times)
+        Data from the session to compare to with shape (n_trials, n_channels, n_times)
         
     X2 (array): 
-        Data from the session to flip the sign of with shape (n_channels, n_trials, n_times)
+        Data from the session to flip the sign of with shape (n_trials, n_channels, n_times)
 
     Returns
     -------
@@ -139,22 +139,22 @@ def flip_sign(X1, X2):
     """
 
     # checking that the T and P dimensions are the same
-    if X1.shape[0] != X2.shape[0]:
+    if X1.shape[2] != X2.shape[2]:
         raise ValueError('The number of time points in the two sessions are not the same')
     
-    if X1.shape[2] != X2.shape[2]:
+    if X1.shape[1] != X2.shape[1]:
         raise ValueError('The number of parcels in the two sessions are not the same')
 
     # loop over parcels
-    for i in range(X1.shape[2]):
+    for i in range(X1.shape[1]):
         # take means over trials
-        mean1 = np.mean(X1[:, :, i], axis = 1)
-        mean2 = np.mean(X2[:, :, i], axis = 1)
+        mean1 = np.mean(X1[:, i, :], axis = 0)
+        mean2 = np.mean(X2[:, i, :], axis = 0)
 
         # calculate correlation
         corr = np.corrcoef(mean1, mean2)[0, 1]
 
         if corr < 0: # if correlation is negative, flip sign
-            X2[:, :, i] = X2[:, :, i] * -1
+            X2[:, i, :] = X2[:, i, :] * -1
 
     return X2
