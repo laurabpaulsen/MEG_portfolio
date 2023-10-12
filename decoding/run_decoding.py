@@ -7,6 +7,7 @@ import numpy as np
 from sklearn import svm
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_splits
 import multiprocessing
 from tqdm import tqdm
 
@@ -79,8 +80,13 @@ def across_subject(decoder, Xs, ys):
         Data array.
     ys : array
         Label array.
+
+    Returns
+    -------
+    results : array
+        Array with shape (n_subjects, n_timepoints) containing decoding results for each subject and timepoint.
     """
-    N, S, T = Xs[0].shape
+    N, S, T = Xs[0].shape # ntrials, nsources, ntimepoints
     results = np.zeros((len(Xs), T)) # number of subjects, number of time points
 
     for i in tqdm(range(len(Xs)), desc = "Leaving out data from subject for testing"):
@@ -103,6 +109,50 @@ def across_subject(decoder, Xs, ys):
     return results
 
 
+def within_subject(decoder, X, y, ncv = 10):
+    """
+    Uses cross-validation to run decoding within subject.
+
+    Parameters
+    ----------
+    decoder : sklearn estimator
+        Decoder to use.
+    X : array
+        Data array.
+    y : array
+        Label array.
+    
+    Returns
+    -------
+    results : array
+        Array with shape (n_timepoints, ) containing decoding results for each timepoint.
+    """
+
+    N, S, T = X.shape # ntrials, nsources, ntimepoints
+    results = np.zeros(T) # number of time points
+
+    # making array with all the indices of y for cross validation
+    inds = np.array(range(N))
+    np.random.shuffle(inds)
+
+    # balance class weights
+    X, y = balance_class_weights(X, y)
+
+    results = np.zeros((T, ncv))
+
+    for c in range(ncv):
+        inds_cv_test = inds[int(len(inds)/ncv) * c : int(len(inds)/ncv)*(c+1)]
+        X_test = X[:, inds_cv_test, :]
+        X_train = np.delete(X, inds_cv_test, axis=0)
+        y_test = y[inds_cv_test]
+        y_train = np.delete(y, inds_cv_test)
+
+        for t in tqdm(range(T), desc = "timepoint"):
+            decoder.fit(X_train[:, :, t], y_train)
+            results[t, c] = decoder.score(X_test[:, :, t], y_test)
+        
+    
+    return results
 
 def keep_triggers(X, y, zero = [], one = []):
     """
@@ -171,10 +221,16 @@ if __name__ in "__main__":
 
     # run decoding
     decoder = make_pipeline(StandardScaler(), svm.SVC(C=1, kernel='linear', gamma='auto'))
-    results = across_subject(decoder, Xs, ys)
 
+    # run within subject decoding
+    for i, (X, y) in enumerate(zip(Xs, ys)):
+        results = within_subject(decoder, X, y)
+        np.save(outpath / "within_subject_{i}_11_12.npy", results)
+    
+    # run across subject decoding
+    #results = across_subject(decoder, Xs, ys)
     # save results
-    np.save(outpath / "across_subjects_11_12.npy", results)
+    #np.save(outpath / "across_subjects_11_12.npy", results)
 
 
     
