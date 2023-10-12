@@ -7,9 +7,13 @@ import numpy as np
 from sklearn import svm
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_splits
 import multiprocessing
 from tqdm import tqdm
+
+# local imports
+import sys
+sys.path.append(str(Path(__file__).parents[1]))
+from utils import flip_sign
 
 def read_data(data_path, subject, x_file="X.npy", y_file="y.npy"):
     """Read in data for a given subject.
@@ -131,18 +135,18 @@ def within_subject(decoder, X, y, ncv = 10):
     N, S, T = X.shape # ntrials, nsources, ntimepoints
     results = np.zeros(T) # number of time points
 
+    # balance class weights
+    X, y = balance_class_weights(X, y)
+
     # making array with all the indices of y for cross validation
     inds = np.array(range(N))
     np.random.shuffle(inds)
-
-    # balance class weights
-    X, y = balance_class_weights(X, y)
 
     results = np.zeros((T, ncv))
 
     for c in range(ncv):
         inds_cv_test = inds[int(len(inds)/ncv) * c : int(len(inds)/ncv)*(c+1)]
-        X_test = X[:, inds_cv_test, :]
+        X_test = X[inds_cv_test, :, :]
         X_train = np.delete(X, inds_cv_test, axis=0)
         y_test = y[inds_cv_test]
         y_train = np.delete(y, inds_cv_test)
@@ -173,7 +177,6 @@ def keep_triggers(X, y, zero = [], one = []):
         Array with shape (n_trials, ) containing 0 and 1.
     """
     # only keep certain triggers
-    print(zero + one)
     trigger_idx = np.where(np.isin(y, zero + one))
 
     X = X[trigger_idx[0], :, :]
@@ -210,11 +213,14 @@ if __name__ in "__main__":
     Xs = []
     ys = []
 
-    for subject in subjects:
+    for i, subject in enumerate(subjects):
         X, y = read_data(data_path, subject, x_file=f"X_{label}.npy", y_file=f"y_{label}.npy")
 
         # only keep data from certain triggers and convert y to zero and ones
         X, y = keep_triggers(X, y, zero = [11], one = [12])
+
+        if i != 0:
+            X = flip_sign(Xs[0], X)
 
         Xs.append(X)
         ys.append(y)
@@ -223,9 +229,9 @@ if __name__ in "__main__":
     decoder = make_pipeline(StandardScaler(), svm.SVC(C=1, kernel='linear', gamma='auto'))
 
     # run within subject decoding
-    for i, (X, y) in enumerate(zip(Xs, ys)):
-        results = within_subject(decoder, X, y)
-        np.save(outpath / "within_subject_{i}_11_12.npy", results)
+    for i, (X, y) in tqdm(enumerate(zip(Xs, ys))):
+        results = within_subject(decoder, X, y, ncv = 5)
+        np.save(outpath / f"within_subject_{i+1}_11_12.npy", results)
     
     # run across subject decoding
     #results = across_subject(decoder, Xs, ys)
