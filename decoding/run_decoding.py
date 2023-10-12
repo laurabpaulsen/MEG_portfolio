@@ -4,7 +4,7 @@ X shape = (n_epochs, n_times, n_sources)
 
 from pathlib import Path
 import numpy as np
-from sklearn import svm
+from sklearn import svm, naive_bayes
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 import multiprocessing
@@ -150,7 +150,7 @@ def within_subject(decoder, X, y, ncv = 10):
         y_test = y[inds_cv_test]
         y_train = np.delete(y.copy(), inds_cv_test)
 
-        for t in tqdm(range(T), desc = "timepoint"):
+        for t in range(T):
             decoder.fit(X_train[:, :, t], y_train)
             results[t, c] = decoder.score(X_test[:, :, t], y_test)
         
@@ -205,7 +205,7 @@ if __name__ in "__main__":
         outpath.mkdir()
     
     subjects = ["0108", "0109", "0110", "0111", "0112", "0113", "0114", "0115"]
-    label = 'parsopercularis-lh'    
+    label = 'whole_brain'    
 
     # read in data for all subjects
     Xs = []
@@ -215,7 +215,7 @@ if __name__ in "__main__":
         X, y = read_data(data_path, subject, x_file=f"X_{label}.npy", y_file=f"y_{label}.npy")
 
         # only keep data from certain triggers and convert y to zero and ones
-        X, y = keep_triggers(X, y, zero = [11], one = [12])
+        X, y = keep_triggers(X, y, zero = [11], one = [202])
 
         if i != 0:
             X = flip_sign(Xs[0], X)
@@ -224,20 +224,16 @@ if __name__ in "__main__":
         ys.append(y)
 
     # run decoding
-    decoder = make_pipeline(StandardScaler(), svm.SVC(C=1, kernel='linear', gamma='auto'))
+    decoder = make_pipeline(StandardScaler(), naive_bayes.GaussianNB())
 
-    # run within subject decoding
-    for i, (X, y) in tqdm(enumerate(zip(Xs, ys))):
-        if i==0:
-            pass
-        else:
-            results = within_subject(decoder, X, y, ncv = 5)
-            np.save(outpath / f"within_subject_{i+1}_11_12.npy", results)
-    
     # run across subject decoding
     #results = across_subject(decoder, Xs, ys)
     # save results
-    #np.save(outpath / "across_subjects_11_12.npy", results)
+    #np.save(outpath / f"across_subjects_11_202_{label}.npy", results)
 
 
+    # run within subject decoding
+    for i, (X, y) in tqdm(enumerate(zip(Xs, ys))):
+        results = within_subject(decoder, X, y, ncv = 5)
+        np.save(outpath / f"within_subject_{i+1}_11_202_{label}.npy", results)
     
