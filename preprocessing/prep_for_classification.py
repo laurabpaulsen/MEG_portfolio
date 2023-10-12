@@ -10,11 +10,26 @@ from pathlib import Path
 import json
 import mne
 import numpy as np
+import re
 
 # local imports
 sys.path.append(str(Path(__file__).parents[1]))
 from utils import preprocess_data_sensorspace, epochs_to_sourcespace, morph_stcs_label
 
+def sanitize_label_for_filename(label: str) -> str:
+    """
+    Sanitize a label for use in a filename.
+
+    Any characters not in [a-zA-Z0-9_\-] are replaced with an underscore.
+
+    Args:
+        label: The label to sanitize.
+
+    Returns:
+        The sanitized label.
+    """
+
+    return re.sub(r"[^a-zA-Z0-9_\-]", "_", label)
 
 def main():
     path = Path(__file__).parents[1]
@@ -25,10 +40,10 @@ def main():
     recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2', '004.other_block2', '005.self_block3']#  '006.other_block3']
     outpath = path / "data"
     fwd_fsaverage_path = fs_subjects_dir / "fsaverage" / "bem" / "fsaverage-oct-6-src.fif"
-    ICA_path = path / "ICA"
+    ICA_path = Path("/work/807746/study_group_8/ICA")
 
 
-    label = 'parsopercularis-lh'
+    label = 'superiorfrontal-lh|superiorfrontal-rh'
 
     event_id = {
         "IMG/PS": 11,
@@ -113,9 +128,9 @@ def main():
         print(y.shape)
         
         # save the data
-        np.save(subject_outpath / f"X_{label}.npy", X)
-        np.save(subject_outpath / f"y_{label}.npy", y)
-        
+        sanitized_label = sanitize_label_for_filename(label)
+        np.save(subject_outpath / f"X_{sanitized_label}.npy", X)
+        np.save(subject_outpath / f"y_{sanitized_label}.npy", y)
 
 
 if __name__ in "__main__":
