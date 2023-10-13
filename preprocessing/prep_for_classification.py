@@ -18,6 +18,7 @@ import json
 import mne
 import numpy as np
 import re
+import logging
 
 # Set MNE cache path, can help on multiple runs
 if not os.path.exists("/tmp/mne-cache"):
@@ -35,7 +36,7 @@ def sanitize_label_for_filename(label: str) -> str:
     """
     Sanitize a label for use in a filename.
 
-    Any characters not in [a-zA-Z0-9_\-] are replaced with an underscore.
+    Any characters not in [a-zA-Z0-9_-] are replaced with an underscore.
 
     Args:
         label: The label to sanitize.
@@ -53,12 +54,13 @@ def main():
     MEG_data_path = Path("/work/834761")
     subjects = ["0108", "0109", "0110", "0111", "0112", "0113", "0114", "0115"]
     recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2', '004.other_block2', '005.self_block3']#  '006.other_block3']
-    outpath = path / "data"
+    outpath = Path("/work/807746/study_group_8") / "data"
     fwd_fsaverage_path = fs_subjects_dir / "fsaverage" / "bem" / "fsaverage-oct-6-src.fif"
     ICA_path = Path("/work/807746/study_group_8/ICA")
 
 
     label = 'superiorfrontal-lh|superiorfrontal-rh'
+    logging.info(f"Processing label exprssion {label}")
 
     event_id = {
         "IMG/PS": 11,
@@ -80,6 +82,7 @@ def main():
 
 
     for subject in subjects:
+        logging.info(f"Processing subject {subject}")
         subject_info = session_info[subject]
         subject_path = MEG_data_path / subject
         
@@ -93,6 +96,7 @@ def main():
             subject_outpath.mkdir(parents=True)
 
         for idx, recording_name in enumerate(recording_names):
+            logging.info(f"Processing recording {recording_name}")
             subject_session_info = subject_info[recording_name]
 
             fif_file_path = list((subject_meg_path / "MEG" / recording_name / "files").glob("*.fif"))[0]
@@ -145,8 +149,13 @@ def main():
         
         # save the data
         sanitized_label = sanitize_label_for_filename(label)
-        np.save(subject_outpath / f"X_{sanitized_label}.npy", X)
-        np.save(subject_outpath / f"y_{sanitized_label}.npy", y)
+        logging.info(f"Saving data for label {sanitized_label}")
+        X_path = subject_outpath / f"X_{sanitized_label}.npy"
+        logging.info(f"Saving X data to {X_path}")
+        y_path = subject_outpath / f"y_{sanitized_label}.npy"
+        logging.info(f"Saving y data to {y_path}")
+        np.save(X_path, X)
+        np.save(y_path, y)
 
 
 if __name__ in "__main__":
