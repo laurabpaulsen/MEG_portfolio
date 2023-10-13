@@ -48,6 +48,7 @@ def sanitize_label_for_filename(label: str) -> str:
     return re.sub(r"[^a-zA-Z0-9_\-]", "_", label)
 
 def main():
+    logging.basicConfig(level=logging.INFO)
     path = Path(__file__).parents[1]
 
     fs_subjects_dir = Path("/work/835482") # path to freesurfer subjects directory
