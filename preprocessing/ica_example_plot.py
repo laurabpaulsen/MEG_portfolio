@@ -14,8 +14,12 @@ def plot_noise_components(ica, raw, ica_noise_components):
     ica.plot_components(inst=raw, picks=ica_noise_components, axes=axes[0], show=False)
 
     # plot the time series of the components
-    axes[1] = ica.plot_sources(inst=raw, picks=ica_noise_components, show=False)
+    # extract the time series of the components
+    ica_sources = ica.get_sources(raw)
+    print(ica_sources.shape)
 
+    # plot the time series of the components
+    axes[1].plot(ica_sources.get_data()[ica_noise_components].T)
 
     plt.savefig(outpath / "ica_components.png")
     
