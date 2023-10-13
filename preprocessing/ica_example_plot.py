@@ -47,5 +47,5 @@ if __name__ in "__main__":
     ica_noise_components = subject_session_info["noise_components"]
 
     # plot the noise ica components
-    ica.plot_components(picks =ica_noise_components, inst=raw, show=False, picks=ica.exclude, show = False)
+    ica.plot_components(picks =ica_noise_components, inst=raw, show=False)
     plt.savefig(outpath / "ica_components.png")
