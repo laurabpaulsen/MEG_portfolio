@@ -4,6 +4,20 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import json
 
+def plot_noise_components(ica, raw, ica_noise_components):
+    """
+    Plots the noise components of an ICA object.
+    """
+    fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+
+    # plot the topomap of the components
+    ica.plot_components(inst=raw, picks=ica_noise_components, axes=axes[0], show=False)
+
+    # plot the time series of the components
+    ica.plot_sources(inst=raw, picks=ica_noise_components, axes=axes[1], show=False)
+
+    plt.savefig(outpath / "ica_components.png")
+    
 
 
 if __name__ in "__main__":
@@ -47,5 +61,5 @@ if __name__ in "__main__":
     ica_noise_components = subject_session_info["noise_components"]
 
     # plot the noise ica components
-    ica.plot_components(picks =ica_noise_components, inst=raw, show=False)
-    plt.savefig(outpath / "ica_components.png")
+    plot_noise_components(ica, raw, ica_noise_components)
+    
