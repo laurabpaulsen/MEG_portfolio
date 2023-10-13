@@ -5,12 +5,27 @@ This script loops over all participants and all sessions and prepares the data f
 
 """
 
+import os
+import multiprocessing
+
+# Set number of CPUs you have...
+num_cpu = multiprocessing.cpu_count()  # you can manually set this to an int
+os.environ["OMP_NUM_THREADS"] = str(num_cpu)
+
 import sys
 from pathlib import Path
 import json
 import mne
 import numpy as np
 import re
+
+# Set MNE cache path, can help on multiple runs
+if not os.path.exists("/tmp/mne-cache"):
+    try:
+        os.mkdir("/tmp/mne-cache")
+        mne.utils.config.set_cache_dir("/tmp/mne-cache")
+    except:
+        pass
 
 # local imports
 sys.path.append(str(Path(__file__).parents[1]))
@@ -103,14 +118,15 @@ def main():
                 reject = subject_info["reject"], 
                 ica_path = ICA_path_sub, 
                 noise_components = subject_session_info["noise_components"], 
-                event_ids=event_id)
+                event_ids=event_id,
+                n_jobs=num_cpu)
 
             # load forward solution
             fwd_fname = recording_name[4:] + '-oct-6-src-' + '5120-fwd.fif'
             fwd = mne.read_forward_solution(fs_subjects_dir / subject / 'bem' / fwd_fname)
 
             # get source time courses
-            stcs = epochs_to_sourcespace(epochs, fwd)
+            stcs = epochs_to_sourcespace(epochs, fwd, n_jobs=num_cpu)
 
             # morph from subject to fsaverage
             morph_subject_path = fs_subjects_dir / subject / "bem" / f"{subject}-oct-6-src-morph.h5"
