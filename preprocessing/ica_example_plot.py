@@ -4,25 +4,55 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import json
 
-def plot_noise_components(ica, raw, ica_noise_components):
+import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
+
+plt.rcParams['font.family'] = 'sans-serif'
+
+def plot_noise_components(ica, raw, ica_noise_components, outpath):
     """
     Plots the noise components of an ICA object.
     """
-    fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+    fig = plt.figure(figsize=(10, 7))
+    spec = GridSpec(4, 2, width_ratios=[1, 2])
 
-    # plot the topomap of the components
-    ica.plot_components(inst=raw, picks=ica_noise_components, axes=axes[0], show=False)
+    # Create subplots using the grid
+    topomap_axes = [plt.Subplot(fig, spec[i, 0]) for i in range(4)]
+    time_series_axes = [plt.Subplot(fig, spec[i, 1]) for i in range(4)]
 
-    # plot the time series of the components
-    # extract the time series of the components
-    ica_sources = ica.get_sources(raw)
-    print(ica_sources.shape)
+    for i in range(4):
+        fig.add_subplot(topomap_axes[i])
+        fig.add_subplot(time_series_axes[i])
 
-    # plot the time series of the components
-    axes[1].plot(ica_sources.get_data()[ica_noise_components].T)
+    # Plot the topomap of the components
+    ica.plot_components(inst=raw, picks=ica_noise_components, axes=topomap_axes, show=False)
+    for ax in topomap_axes:
+        title = ax.get_title()
+        ax.set_title("")
+        ax.set_ylabel(title)
+
+    topomap_axes[-1].axis("off")
+
+    # Plot the time series of the components
+    freq = raw.info["sfreq"]
+    ica_sources = ica.get_sources(raw).get_data(start=int(20*freq), stop=int(30*freq))[ica_noise_components]
+    extra_sensors = raw.get_data(['EOG001', 'EOG002', 'ECG003'], start=int(20*freq), stop=int(30*freq))
+
+    # Plot the time series of the components
+    for idx, ax in enumerate(time_series_axes[:3]):
+        ax.plot(ica_sources[idx].T, linewidth=0.5, color="k")
+
+    time_series_axes[-1].plot(extra_sensors[2].T, label="ECG", linewidth=0.5, color="darkgreen")
+    time_series_axes[-1].plot(extra_sensors[0].T, label="EOG", linewidth=0.5, color="darkblue")
+    time_series_axes[-1].legend()
+
+    # set labels
+    topomap_axes[0].set_title("Topomaps")
+    time_series_axes[0].set_title("Timeseries")
+
 
     plt.savefig(outpath / "ica_components.png")
-    
+
 
 
 if __name__ in "__main__":
@@ -66,5 +96,5 @@ if __name__ in "__main__":
     ica_noise_components = subject_session_info["noise_components"]
 
     # plot the noise ica components
-    plot_noise_components(ica, raw, ica_noise_components)
+    plot_noise_components(ica, raw, ica_noise_components, outpath)
     
