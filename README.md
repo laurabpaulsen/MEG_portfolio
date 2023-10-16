@@ -16,7 +16,7 @@ The GitHub repository is organised as follows:
 ├── preprocessing
 │   ├── check_ica.ipynb                     Notebook for checking ICA components
 │   ├── prep_for_classification.py          Preprocessing data for classification
-│   ├── run_ica.py                          Run ICA on data
+│   └── run_ica.py                          Generate ICA solutions for all subjects and runs
 ├── sanity_checks                           Code used for sanity checks and results
 ├── env_to_ipykernel.sh                     Let env be used as kernel in jupyter notebook
 ├── generate_session_info.py                Bad channels, tmin, tmax, etc.
