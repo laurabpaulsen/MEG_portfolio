@@ -172,6 +172,8 @@ if __name__ in "__main__":
     labels_area_1 = ['parsopercularis-lh','parsorbitalis-lh','parstriangularis-lh']
     labels_area_2 = ['superiorfrontal-rh']
 
+    k_features = 200
+
 
     # create output directory if it doesn't exist
     if not outpath.exists():
@@ -215,10 +217,9 @@ if __name__ in "__main__":
             # make sure we keep an equal number of trials per participant
             Xs, ys = equalise_trials(Xs, ys)
             # run decoding
-            decoder = make_pipeline(StandardScaler(), SelectKBest(k=10), svm.SVC(kernel = "rbf"))
+            decoder = make_pipeline(StandardScaler(), SelectKBest(k=k_features), svm.SVC(kernel = "rbf"))
 
             # run across subject decoding
             results = across_subject(decoder, Xs, ys)
             # save results
-            np.save(outpath / f"across_subjects_{trig_pairs_labels[idx_trig]}_area_{area_labels[idx_area]}.npy", results)
-
+            np.save(outpath / f"across_subjects_{trig_pairs_labels[idx_trig]}_area_{area_labels[idx_area]}_{k_features}.npy", results)
