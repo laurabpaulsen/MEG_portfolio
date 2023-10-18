@@ -52,7 +52,7 @@ session_info = {
     },
 
     "0114": {
-        "reject":{"mag": 3000e-15, "grad": 3000e-13,
+        "reject":{"mag": 3000e-15, "grad": 3000e-13},
         "001.self_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
@@ -80,7 +80,7 @@ session_info = {
             "tmax": None, 
             "noise_components": [4, 8, 9]
         },
-
+        
         "005.self_block3": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
@@ -93,7 +93,8 @@ session_info = {
             "tmin": 15, 
             "tmax": None, 
             "noise_components": [5, 7, 9]
-        },
+        }
+    
     },
     "0113":{
         "reject":{"mag": 3000e-15, "grad": 3000e-13},
@@ -360,8 +361,6 @@ session_info = {
             "noise_components": [20, 4, 5]
         }
     }
-
-}
 }
 
 
