@@ -102,8 +102,8 @@ def across_subject(decoder, Xs, ys):
     results : array
         Array with shape (n_subjects, n_timepoints) containing decoding results for each subject and timepoint.
     """
-    N, S, T = Xs[0].shape # ntrials, nsources, ntimepoints
-    results = np.zeros((len(Xs), T//10)) # number of subjects, number of time points
+    
+    results = np.zeros((len(Xs), 550//10)) # number of subjects, number of time points
 
     for i in tqdm(range(len(Xs)), desc = "Leaving out data from subject for testing"):
         X_tmp = Xs.copy()
@@ -114,11 +114,16 @@ def across_subject(decoder, Xs, ys):
 
         X_train = np.concatenate(X_tmp, axis=0)
         y_train = np.concatenate(y_tmp, axis=0)
+        print(X_train.shape, y_train.shape)
         
         # loop over 10 time points per range
-        for t_ind, t in enumerate(range(10, T, 10)):
-            x_tmp_train = X_train[:, :, t-10:t].reshape((N, -1))
-            x_tmp_test = X_test[:, :, t-10:t].reshape((N, -1))
+        N, S, T = X_train.shape # ntrials, nsources, ntimepoints
+
+        for t_ind, t in enumerate(range(0, T-10, 10)):
+            x_tmp_train = X_train[:, :, t:t+10].reshape((X_train.shape[0], 10*S))
+            x_tmp_test = X_test[:, :, t:t+10].reshape((X_test.shape[0], 10*S))
+
+            print(x_tmp_train.shape, y_train.shape)
 
             decoder.fit(x_tmp_train, y_train)
             results[i, t_ind] = decoder.score(x_tmp_test, y_test)
@@ -226,4 +231,4 @@ if __name__ in "__main__":
             # run across subject decoding
             results = across_subject(decoder, Xs, ys)
             # save results
-            np.save(outpath / f"across_subjects_{trig_pairs_labels[idx_trig]}_area_{area_labels[idx_area]}_{k_features}.npy", results)
+            np.save(outpath / f"across_subjects_{trig_pairs_labels[idx_trig]}_area_{area_labels[idx_area]}_{k_features}_time.npy", results)
