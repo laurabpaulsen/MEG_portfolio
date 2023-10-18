@@ -10,6 +10,23 @@ import matplotlib.pyplot as plt
 
 from pathlib import Path
 
+def plot_parc(subject, parc, hemi, surf_name, subjects_dir, axes):
+    brain = mne.viz.Brain(
+        subject=subject,
+        hemi=hemi,
+        surf=surf_name,
+        subjects_dir=subjects_dir,
+        background="white",
+        foreground="black",
+        cortex="bone",
+        size=(800, 600),
+        show=False,
+        axes=axes)
+    
+    brain.add_annotation(
+        parc=parc
+    )
+
 
 
 if __name__ == "__main__":
@@ -36,22 +53,7 @@ if __name__ == "__main__":
 
     # Plot the data
     fig, axes = plt.subplots(1, 2, figsize=(10, 5))
-    mne.viz.plot_annot(
-        subject="fsaverage",
-        parc="aparc",
-        hemi="lh",
-        surf_name="white",
-        subjects_dir=path / "data" / "fsaverage",
-        axes=axes[0],
-        show=False
-    )
-    mne.viz.plot_annot(
-        subject="fsaverage",
-        parc="aparc",
-        hemi="rh",
-        surf_name="white",
-        subjects_dir=path / "data" / "fsaverage",
-        axes=axes[1],
-        show=False
-    )
+    plot_parc("fsaverage", "aparc", "lh", "white", freesurfer_path, axes[0])
+    plot_parc("fsaverage", "aparc", "rh", "white", freesurfer_path, axes[1])
+
     plt.savefig(path / "fig" / "parcellations.png")
