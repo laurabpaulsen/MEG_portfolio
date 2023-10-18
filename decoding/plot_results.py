@@ -46,23 +46,20 @@ if __name__ in "__main__":
     results_path = path / "results" 
     outpath = path / "fig"
 
-    x_files = ["across_subjects_pos_neg_area_LIFG.npy", 
-               "across_subjects_pos_neg_area_mPFC.npy",
-               "across_subjects_assigned_selfchosen_area_LIFG.npy",
-               "across_subjects_assigned_selfchosen_area_mPFC.npy"]
-    
+    # get all npy files in results_path
+    files = list(results_path.glob("*.npy"))
 
     # create output directory if it doesn't exist
     if not outpath.exists():
         outpath.mkdir()
 
-    for files in x_files:
-        acc = np.load(results_path / files)
+    for f in files:
+        acc = np.load(results_path / f)
         plot_decoding_accuracy(
             acc, 
-            title = files, 
+            title = f, 
             legend_title = "Test subject",
-            savepath = outpath / f"{files[:-4]}.png"
+            savepath = outpath / f"{f[:-4]}.png"
             )
 
     
