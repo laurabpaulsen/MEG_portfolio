@@ -3,7 +3,7 @@ import mne
 import numpy as np
 from pathlib import Path
 
-def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None, ica_path:Path = None, noise_components = None, event_ids = None, n_jobs = 4):
+def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None, ica_path:Path = None, noise_components = None, event_ids = None, tmin = -0.2, tmax = 1, n_jobs = 4):
     """
     
     Parameters
@@ -48,7 +48,7 @@ def preprocess_data_sensorspace(fif_path:Path, bad_channels:list, reject = None,
     raw.drop_channels(bad_channels)
 
     # epoching
-    epochs = mne.Epochs(raw, events, event_id = event_ids, tmin=-0.2, tmax=1, baseline=(None, 0), preload = True, reject = reject, proj = True)
+    epochs = mne.Epochs(raw, events, event_id = event_ids, tmin=tmin, tmax=tmax, baseline=(None, 0), preload = True, reject = reject, proj = True)
 
     # downsampling
     epochs.resample(250, n_jobs = n_jobs)
