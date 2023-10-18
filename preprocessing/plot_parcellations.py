@@ -15,8 +15,8 @@ import sys
 sys.path.append(str(Path(__file__).parents[1]))
 from utils import preprocess_data_sensorspace, epochs_to_sourcespace, morph_stcs_label
 
-def plot_parc(stc, subject, parc, hemi, surf_name, subjects_dir, ax):
-    mne.vis.plot_source_estimates(
+def plot_parc(stc, subject, parc, hemi, surf_name, subjects_dir, fig):
+    mne.viz.plot_source_estimates(
         stc,
         subject=subject,
         surface=surf_name,
@@ -25,16 +25,16 @@ def plot_parc(stc, subject, parc, hemi, surf_name, subjects_dir, ax):
         time_label="",
         colormap="viridis",
         transparent=True,
-        axes=ax,
         colorbar=False,
-        show=False
+        figure = fig,
+        backend = "matplotlib",
+        background='white'
     )
 
 
-def get_stc(fif_file_path, fwd, label, fs_subjects_dir, subject):
+def get_stc(fif_file_path, fwd_fsaverage_path, label, fs_subjects_dir, subject):
     epochs = preprocess_data_sensorspace(
                     fif_path = fif_file_path, 
-                    bad_channels = None, 
                     event_ids={"img/self/positive": 11, "img/self/negative": 12},
                     tmin = -0.2,
                     tmax = 2)
@@ -48,15 +48,18 @@ def get_stc(fif_file_path, fwd, label, fs_subjects_dir, subject):
 
     # morph from subject to fsaverage
     morph_subject_path = fs_subjects_dir / subject / "bem" / f"{subject}-oct-6-src-morph.h5"
-                
-    morphed = morph_stcs_label(morph_subject_path, stcs, fs_subjects_dir, label)
+    
 
-    return morphed
+    morph = mne.read_source_morph(morph_subject_path)
+            
+    # morph from subject to fsaverage
+    stc = morph.apply(stcs[0])
+    return stc
 
 
 
 if __name__ == "__main__":
-    path = Path(__file__).parents[1]
+    path = Path(__file__).parent
 
     freesurfer_path = Path("/work/835482")
     subject = "0108"
@@ -72,8 +75,8 @@ if __name__ == "__main__":
     # get the 
     fif_file_path = list((subject_meg_path / "MEG" / recording_name / "files").glob("*.fif"))[0]
 
-    morped = get_stc(fif_file_path, fwd_fsaverage_path, "superiorfrontal-rh", freesurfer_path, "fsaverage")
+    stc = get_stc(fif_file_path, fwd_fsaverage_path, "superiorfrontal-rh", freesurfer_path, subject=subject)
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
-    plot_parc(morped, "fsaverage", "superiorfrontal-rh", "rh", "pial", freesurfer_path, ax)
+    plot_parc(stc, "fsaverage", "superiorfrontal-rh", "rh", "pial", freesurfer_path, fig)
     plt.savefig(path / "fig" / "parcellations.png")

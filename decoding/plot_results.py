@@ -6,7 +6,7 @@ def axis_seconds(ax):
     """
     Changes the x axis to seconds
     """
-    ax.set_xticks(np.arange(0, 550), step=50), [-0.2, 0. , 0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4, 1.6, 1.8, 2.])
+    ax.set_xticks(np.arange(0, 551, step=50), [-0.2, 0. , 0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4, 1.6, 1.8, 2.])
 
 def plot_decoding_accuracy(acc, title, legend_title, savepath = None):
     fig, ax = plt.subplots(1, 1, figsize = (12, 8), dpi = 300)
@@ -46,10 +46,10 @@ if __name__ in "__main__":
     results_path = path / "results" 
     outpath = path / "fig"
 
-    x_files = ["across_subjects_pos_neg_area_1.npy", 
-               "across_subjects_pos_neg_area_2.npy",
-               "across_subjects_assigned_selfchosen_area_1.npy",
-               "across_subjects_assigned_selfchosen_area_2.npy"]
+    x_files = ["across_subjects_pos_neg_area_LIFG.npy", 
+               "across_subjects_pos_neg_area_mPFC.npy",
+               "across_subjects_assigned_selfchosen_area_LIFG.npy",
+               "across_subjects_assigned_selfchosen_area_mPFC.npy"]
     
 
     # create output directory if it doesn't exist
