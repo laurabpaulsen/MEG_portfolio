@@ -220,5 +220,5 @@ if __name__ in "__main__":
             # run across subject decoding
             results = across_subject(decoder, Xs, ys)
             # save results
-            np.save(outpath / f"across_subjects_{trig_pairs_labels[idx_trig]}_area_{labels_area_1[idx_area]}.npy", results)
+            np.save(outpath / f"across_subjects_{trig_pairs_labels[idx_trig]}_area_{area_labels[idx_area]}.npy", results)
 
