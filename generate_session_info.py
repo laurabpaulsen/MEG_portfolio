@@ -7,7 +7,7 @@ import json
 
 session_info = {
     "0115": {
-        "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 200e-6},
+        "reject":{"mag": 3000e-15, "grad": 3000e-13},
         "001.self_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
@@ -52,7 +52,7 @@ session_info = {
     },
 
     "0114": {
-        "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 300e-6},
+        "reject":{"mag": 3000e-15, "grad": 3000e-13,
         "001.self_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
@@ -96,7 +96,7 @@ session_info = {
         },
     },
     "0113":{
-        "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 400e-6},
+        "reject":{"mag": 3000e-15, "grad": 3000e-13},
         "001.self_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
@@ -141,7 +141,7 @@ session_info = {
     },
 
     "0112":{
-        "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 400e-6},
+        "reject":{"mag": 3000e-15, "grad": 3000e-13},
         "001.self_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
@@ -186,7 +186,7 @@ session_info = {
     },
 
     "0111":{
-        "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 500e-6},
+        "reject":{"mag": 3000e-15, "grad": 3000e-13},
         "001.self_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
@@ -229,7 +229,7 @@ session_info = {
         },
     },
     "0110":{
-        "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 300e-6},
+        "reject":{"mag": 3000e-15, "grad": 3000e-13},
         "001.self_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
@@ -273,7 +273,7 @@ session_info = {
     },
 
     "0109":{
-        "reject":{"mag": 3000e-15, "grad": 3000e-13, "eog": 400e-6},
+        "reject":{"mag": 3000e-15, "grad": 3000e-13},
         "001.self_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
@@ -318,7 +318,7 @@ session_info = {
     },
 
     "0108":{
-        "reject": {"mag": 3000e-15, "grad": 3000e-13, "eog": 400e-6},
+        "reject": {"mag": 3000e-15, "grad": 3000e-13},
         "001.self_block1": {
             "bad_channels": ["MEG0422"], 
             "tmin": 15, 
@@ -358,11 +358,10 @@ session_info = {
             "tmin": 24, 
             "tmax": 360, 
             "noise_components": [20, 4, 5]
-        },
+        }
     }
 
-    
-
+}
 }
 
 
