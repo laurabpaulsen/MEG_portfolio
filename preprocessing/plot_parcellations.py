@@ -23,7 +23,7 @@ if __name__ == "__main__":
         parc="aparc",
         hemi="lh",
         surf_name="white",
-        subjects_dir=path / "data" / "fsaverage"
+        subjects_dir=freesurfer_path
     )
 
     area2 = mne.read_labels_from_annot(
@@ -31,7 +31,7 @@ if __name__ == "__main__":
         parc="aparc",
         hemi="rh",
         surf_name="white",
-        subjects_dir=path / "data" / "fsaverage"
+        subjects_dir=freesurfer_path
     )
 
     # Plot the data
