@@ -60,30 +60,12 @@ def main():
     fs_subjects_dir = Path("/work/835482") # path to freesurfer subjects directory
     MEG_data_path = Path("/work/834761")
     subjects = ["0108", "0109", "0110", "0111", "0112", "0113", "0114", "0115"]
-    recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2', '004.other_block2', '005.self_block3']#  '006.other_block3']
-    outpath = Path("/work/807746/study_group_8") / "data"
+    recording_names = ['001.self_block1',  '002.other_block1', '003.self_block2', '004.other_block2', '005.self_block3', '006.other_block3']
+    outpath = path / "data"
     fwd_fsaverage_path = fs_subjects_dir / "fsaverage" / "bem" / "fsaverage-oct-6-src.fif"
-    ICA_path = Path("/work/807746/study_group_8/ICA")
+    ICA_path = path / "ICA"
 
-    labels = []
-
-    if not args.all_parcels:
-        labels = args.parcel_regex
-        logging.info(f"Processing label exprssion(s): {labels}")
-    else:
-        labels = [label.name for label in mne.read_labels_from_annot("fsaverage", parc="aparc", subjects_dir=fs_subjects_dir)]
-        logging.info(f"Processing all parcel labels: {labels}")
-
-    event_id = {
-        "IMG/PS": 11,
-        "IMG/PO": 21,
-        "IMG/NS": 12,
-        "IMG/NO": 22,
-        "IMG/BI": 23,
-        "button_press": 202
-    }
-
-
+    labels = ["parsopercularis-lh", "parsorbitalis-lh", "parstriangularis-lh", "superiorfrontal-rh"]
     # load session information with reject criterion
     with open(path / 'session_info.txt', 'r') as f:
         file = f.read()
@@ -119,15 +101,11 @@ def main():
                 if 'self' in recording_name:
                     event_id = {
                         "img/self/positive": 11, 
-                        "img/self/negative": 12, 
-                        "img/button_press": 23,
-                        "response/self": 202}
+                        "img/self/negative": 12}
                 elif 'other' in recording_name: 
                     event_id = {
                         "img/assigned/positive": 21, 
-                        "img/assigned/negative": 22, 
-                        "img/assigned/button_press": 23,
-                        "response/assigned": 202}
+                        "img/assigned/negative": 22}
 
                 epochs = preprocess_data_sensorspace(
                     fif_path = fif_file_path, 
@@ -136,6 +114,8 @@ def main():
                     ica_path = ICA_path_sub, 
                     noise_components = subject_session_info["noise_components"], 
                     event_ids=event_id,
+                    tmin = -0.2,
+                    tmax = 2,
                     n_jobs=num_cpu)
 
                 # load forward solution
@@ -147,6 +127,7 @@ def main():
 
                 # morph from subject to fsaverage
                 morph_subject_path = fs_subjects_dir / subject / "bem" / f"{subject}-oct-6-src-morph.h5"
+                
                 X_tmp = morph_stcs_label(morph_subject_path, stcs, fs_subjects_dir, label)
                 y_tmp = epochs.events[:, -1]
 
