@@ -4,9 +4,10 @@ X shape = (n_epochs, n_times, n_sources)
 
 from pathlib import Path
 import numpy as np
-from sklearn import svm, naive_bayes
+from sklearn import svm
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.feature_selection import SelectKBest
 import multiprocessing
 from tqdm import tqdm
 
@@ -32,9 +33,20 @@ def read_data(data_path, subject, x_file="X.npy", y_file="y.npy"):
     y : array
         Label array.
     """
+    if len(x_file) == 1:
+        X = np.load(data_path / subject / x_file[0])
+        y = np.load(data_path / subject / y_file[0])
+    
+    else: # loop over files and concatenate
+        Xs = []
+        ys = []
 
-    X = np.load(data_path / subject / x_file)
-    y = np.load(data_path / subject / y_file)
+        for file_x in x_file:
+            print(np.load(data_path / subject / file_x).shape)
+            Xs.append(np.load(data_path / subject / file_x))
+        
+        y = np.load(data_path / subject / y_file[0])
+        X = np.concatenate(Xs, axis=1)
 
     return X, y
     
@@ -197,43 +209,59 @@ if __name__ in "__main__":
 
     path = Path(__file__).parent
 
-    data_path = path.parent / "data"
-    outpath = path / "results"
+    data_path = Path('/work/807746/study_group_8') / "data"
+    outpath = Path('/work/807746/study_group_8') / "results"
+    trig_pairs_labels = ["pos_neg", "assigned_selfchosen"]
+    trig_pairs = [([11, 21], [12, 22]), ([11, 12], [21, 22])]
+    labels_area_1 = ['parsopercularis-lh','parsorbitalis-lh','parstriangularis-lh']
+    labels_area_2 = ['superiorfrontal-rh']
+
 
     # create output directory if it doesn't exist
     if not outpath.exists():
         outpath.mkdir()
-    
-    subjects = ["0108", "0109", "0110", "0111", "0112", "0113", "0114", "0115"]
-    label = 'whole_brain'    
+                
+    subjects = ["0108", "0109", "0110", "0111", "0112", "0113", "0114", "0115"] 
 
-    # read in data for all subjects
-    Xs = []
-    ys = []
+    for idx_trig, trig_pair in enumerate(trig_pairs):
+        print(f"Running decoding for {trig_pairs_labels[idx_trig]}")
+        print(f"Triggers are {trig_pair[0]} and {trig_pair[1]}")
+        
+        for idx_area, area in enumerate([labels_area_1, labels_area_2]):
+            print(f"Running decoding for {area}, which is in area {idx_area + 1}")
+            Xs = []
+            ys = []
+            # read in data for all subjects
+            for i, subject in enumerate(subjects):
+                files_x = [f"X_{label}.npy" for label in area]
+                files_y = [f"y_{label}.npy" for label in area]
 
-    for i, subject in enumerate(subjects):
-        X, y = read_data(data_path, subject, x_file=f"X_{label}.npy", y_file=f"y_{label}.npy")
+                
+                print(f"reading data for subject {subject}")
+                print(f"reading files {files_x} and {files_y}")
 
-        # only keep data from certain triggers and convert y to zero and ones
-        X, y = keep_triggers(X, y, zero = [11], one = [202])
-
-        if i != 0:
-            X = flip_sign(Xs[0], X)
-
-        Xs.append(X)
-        ys.append(y)
-
-    # run decoding
-    decoder = make_pipeline(StandardScaler(), naive_bayes.GaussianNB())
-
-    # run across subject decoding
-    results = across_subject(decoder, Xs, ys)
-    # save results
-    np.save(outpath / f"across_subjects_11_202_{label}.npy", results)
+                X, y = read_data(data_path, subject, x_file=files_x, y_file=files_y)
 
 
-    # run within subject decoding
-    for i, (X, y) in tqdm(enumerate(zip(Xs, ys))):
-        results = within_subject(decoder, X, y, ncv = 5)
-        np.save(outpath / f"within_subject_{i+1}_11_202_{label}.npy", results)
-    
+                # only keep data from certain triggers and convert y to zero and ones
+                X, y = keep_triggers(X, y, zero = trig_pair[0], one = trig_pair[1])
+                
+                print(f"X shape is {X.shape}")
+                print(f"y shape is {y.shape}")
+
+                print(f"the y contains the following triggers: {np.unique(y)}")
+
+                if i != 0:
+                    X = flip_sign(Xs[0], X)
+
+                Xs.append(X)
+                ys.append(y)
+
+            # run decoding
+            decoder = make_pipeline(StandardScaler(), SelectKBest(k=10), svm.SVC(kernel = "rbf"))
+
+            # run across subject decoding
+            results = across_subject(decoder, Xs, ys)
+            # save results
+            np.save(outpath / f"across_subjects_{trig_pairs_labels[idx_trig]}_area_{idx_area + 1}.npy", results)
+
