@@ -116,7 +116,7 @@ def across_subject(decoder, Xs, ys):
         y_train = np.concatenate(y_tmp, axis=0)
         
         # loop over 10 time points per range
-        for t_ind, t in enumerate(range(10, T, step = 10)):
+        for t_ind, t in enumerate(range(10, T, 10)):
             x_tmp_train = X_train[:, :, t-10:t].reshape((N, -1))
             x_tmp_test = X_test[:, :, t-10:t].reshape((N, -1))
 
