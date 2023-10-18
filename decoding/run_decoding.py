@@ -14,7 +14,7 @@ from tqdm import tqdm
 # local imports
 import sys
 sys.path.append(str(Path(__file__).parents[1]))
-from utils import flip_sign
+from utils import flip_sign, equalise_trials
 
 def read_data(data_path, subject, x_file="X.npy", y_file="y.npy"):
     """Read in data for a given subject.
@@ -115,58 +115,12 @@ def across_subject(decoder, Xs, ys):
         X_train = np.concatenate(X_tmp, axis=0)
         y_train = np.concatenate(y_tmp, axis=0)
 
-        # balance class weights
-        X_train, y_train = balance_class_weights(X_train, y_train)
-
         for t in tqdm(range(T), desc = "timepoint"):
             decoder.fit(X_train[:, :, t], y_train)
             results[i, t] = decoder.score(X_test[:, :, t], y_test)
     
     return results
 
-
-def within_subject(decoder, X, y, ncv = 10):
-    """
-    Uses cross-validation to run decoding within subject.
-
-    Parameters
-    ----------
-    decoder : sklearn estimator
-        Decoder to use.
-    X : array
-        Data array.
-    y : array
-        Label array.
-    
-    Returns
-    -------
-    results : array
-        Array with shape (n_timepoints, ) containing decoding results for each timepoint.
-    """
-
-    # balance class weights
-    X, y = balance_class_weights(X, y)
-
-    N, S, T = X.shape # ntrials, nsources, ntimepoints
-
-    # making array with all the indices of y for cross validation
-    inds = np.array(range(N))
-    np.random.shuffle(inds)
-
-    results = np.zeros((T, ncv))
-
-    for c in range(ncv):
-        inds_cv_test = inds[int(len(inds)/ncv) * c : int(len(inds)/ncv)*(c+1)]
-        X_test = X[inds_cv_test, :, :]
-        X_train = np.delete(X.copy(), inds_cv_test, axis=0)
-        y_test = y[inds_cv_test]
-        y_train = np.delete(y.copy(), inds_cv_test)
-
-        for t in range(T):
-            decoder.fit(X_train[:, :, t], y_train)
-            results[t, c] = decoder.score(X_test[:, :, t], y_test)
-        
-    return results
 
 def keep_triggers(X, y, zero = [], one = []):
     """
@@ -209,10 +163,12 @@ if __name__ in "__main__":
 
     path = Path(__file__).parent
 
-    data_path = Path('/work/807746/study_group_8') / "data"
-    outpath = Path('/work/807746/study_group_8') / "results"
+    data_path = path.parent / "data"
+    outpath = path / "results"
     trig_pairs_labels = ["pos_neg", "assigned_selfchosen"]
     trig_pairs = [([11, 21], [12, 22]), ([11, 12], [21, 22])]
+
+    area_labels = ["LIFG", "mPFC"]
     labels_area_1 = ['parsopercularis-lh','parsorbitalis-lh','parstriangularis-lh']
     labels_area_2 = ['superiorfrontal-rh']
 
@@ -245,11 +201,9 @@ if __name__ in "__main__":
 
                 # only keep data from certain triggers and convert y to zero and ones
                 X, y = keep_triggers(X, y, zero = trig_pair[0], one = trig_pair[1])
-                
-                print(f"X shape is {X.shape}")
-                print(f"y shape is {y.shape}")
 
-                print(f"the y contains the following triggers: {np.unique(y)}")
+                X, y = balance_class_weights(X, y)
+                
 
                 if i != 0:
                     X = flip_sign(Xs[0], X)
@@ -257,11 +211,14 @@ if __name__ in "__main__":
                 Xs.append(X)
                 ys.append(y)
 
+
+            # make sure we keep an equal number of trials per participant
+            Xs, ys = equalise_trials(Xs, ys)
             # run decoding
             decoder = make_pipeline(StandardScaler(), SelectKBest(k=10), svm.SVC(kernel = "rbf"))
 
             # run across subject decoding
             results = across_subject(decoder, Xs, ys)
             # save results
-            np.save(outpath / f"across_subjects_{trig_pairs_labels[idx_trig]}_area_{idx_area + 1}.npy", results)
+            np.save(outpath / f"across_subjects_{trig_pairs_labels[idx_trig]}_area_{labels_area_1[idx_area]}.npy", results)
 
