@@ -6,7 +6,7 @@ def axis_seconds(ax):
     """
     Changes the x axis to seconds
     """
-    ax.set_xticks(np.arange(0, 551, step=50), [-0.2, 0. , 0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4, 1.6, 1.8, 2.])
+    ax.set_xticks(np.arange(0, 301, step=50), [-0.2, 0. , 0.2, 0.4, 0.6, 0.8, 1.])
 
 def plot_decoding_accuracy(acc, title, legend_title, savepath = None):
     fig, ax = plt.subplots(1, 1, figsize = (12, 8), dpi = 300)
@@ -34,7 +34,7 @@ def plot_decoding_accuracy(acc, title, legend_title, savepath = None):
     ax.legend(title = legend_title, loc = "upper right")
 
     # x limits
-    ax.set_xlim(0, 250*2.2)
+    ax.set_xlim(0, 300)
     ax.set_ylim(.40, .60)
 
     if savepath:
@@ -65,6 +65,7 @@ def twobytwo_plot(files_dict, results_path, savepath = None):
     for filename, info in files_dict.items():
         try: 
             acc = np.load(results_path / filename)
+            acc = acc[:, :300]
 
             # determine the ax to plot on
             row, col = determine_ax(info)
@@ -88,17 +89,20 @@ def twobytwo_plot(files_dict, results_path, savepath = None):
     if savepath:
         plt.savefig(savepath)
 
-def plot_average(files_dict, savepath = None):
+def plot_average(files_dict, results_path, savepath = None):
     fig, ax = plt.subplots(1, 1, figsize = (12, 8), dpi = 300)
     
     for filename, info in files_dict.items():
-        acc = np.load(results_path / filename)
+        try:
+            acc = np.load(results_path / filename)
+            acc = acc[:, :300]
 
-        # get the average
-        average = np.average(acc, axis = 0)
+            # get the average
+            average = np.average(acc, axis = 0)
 
-        ax.plot(average, linewidth = 1.5, label = info["decoding"] + " " + info["area"])
-
+            ax.plot(average, linewidth = 1.5, label = info["decoding"] + " " + info["area"])
+        except:
+            pass
     ax.set_xlabel("Time (s)")
     ax.set_ylabel("Accuracy")
 
@@ -124,7 +128,7 @@ if __name__ in "__main__":
         acc = np.load(f)
         print(acc.shape)
         plot_decoding_accuracy(
-            acc[:, :-1], 
+            acc[:, :300], 
             title = f.stem, 
             legend_title = "Test subject",
             savepath = outpath / f"{f.name[:-4]}.png"
@@ -145,8 +149,12 @@ if __name__ in "__main__":
         )
     
     # plot the average of all 4
-    fig, ax = plt.subplots(1, 1, figsize = (12, 8), dpi = 300)
-
+    plot_average(
+        files,
+        results_path = results_path,
+        savepath = outpath / "results_average.png"
+        
+    )
 
 
     
