@@ -58,27 +58,29 @@ def determine_ax(info):
 
     return row, col
 
-def twobytwo_plot(files_dict, results_path savepath = None):
+def twobytwo_plot(files_dict, results_path, savepath = None):
 
     fig, axs = plt.subplots(2, 2, figsize = (12, 8), dpi = 300)
 
     for idx, (filename, info) in enumerate(files_dict.items()):
-        acc = np.load(results_path / filename)
+        try: 
+            acc = np.load(results_path / filename)
 
-        # determine the ax to plot on
-        row, col = determine_ax(info)
+            # determine the ax to plot on
+            row, col = determine_ax(info)
 
-        for subject in range(acc.shape[0]):
-            axs[row, col].plot(acc[subject], linewidth = .8, alpha = 0.6, label = f"Subject {subject + 1}")
+            for subject in range(acc.shape[0]):
+                axs[row, col].plot(acc[subject], linewidth = .8, alpha = 0.6, label = f"Subject {subject + 1}")
 
-        # plot the average
-        average = np.average(acc, axis = 0)
-        axs[row, col].plot(average, linewidth = 1.5, color = "k")
+            # plot the average
+            average = np.average(acc, axis = 0)
+            axs[row, col].plot(average, linewidth = 1.5, color = "k")
 
-        axs[row, col].set_title(info["decoding"] + " " + info["area"])
-        axs[row, col].set_xlabel("Time (s)")
-        axs[row, col].set_ylabel("Accuracy")
-
+            axs[row, col].set_title(info["decoding"] + " " + info["area"])
+            axs[row, col].set_xlabel("Time (s)")
+            axs[row, col].set_ylabel("Accuracy")
+        except:
+            pass
 
         for ax in axs.flat:
             axis_seconds(ax)
