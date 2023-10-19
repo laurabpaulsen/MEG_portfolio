@@ -115,7 +115,7 @@ def main():
                     noise_components = subject_session_info["noise_components"], 
                     event_ids=event_id,
                     tmin = -0.2,
-                    tmax = 2,
+                    tmax = 1,
                     n_jobs=num_cpu)
 
                 # load forward solution
