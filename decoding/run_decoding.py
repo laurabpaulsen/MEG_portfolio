@@ -165,8 +165,8 @@ if __name__ in "__main__":
 
     data_path = path.parent / "data"
     outpath = path / "results"
-    trig_pairs_labels = ["pos_neg", "assigned_selfchosen"]
-    trig_pairs = [([11, 21], [12, 22]), ([11, 12], [21, 22])]
+    trig_pairs_labels = ["pos_neg", "assigned_selfchosen", "innerspeech_buttonpress"]
+    trig_pairs = [([11, 21], [12, 22]), ([11, 12], [21, 22]), ([11, 21, 12, 22], [202])]
 
     area_labels = ["LIFG", "mPFC"]
     labels_area_1 = ['parsopercularis-lh','parsorbitalis-lh','parstriangularis-lh']
