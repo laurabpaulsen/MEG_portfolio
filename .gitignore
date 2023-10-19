@@ -167,3 +167,5 @@ data/*.npy
 
 # ds store
 .DS_Store
+
+trash/*
