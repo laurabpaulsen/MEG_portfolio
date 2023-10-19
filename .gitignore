@@ -163,4 +163,7 @@ data/*
 ICA/*
 ICA_old/*
 
-*.npy
+data/*.npy
+
+# ds store
+.DS_Store
