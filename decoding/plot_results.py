@@ -70,11 +70,11 @@ def twobytwo_plot(files_dict, results_path, savepath = None):
         row, col = determine_ax(info)
 
         for subject in range(acc.shape[0]):
-            axs[row, col].plot(acc[subject], linewidth = .8, alpha = 0.6, label = f"Subject {subject + 1}")
+            axs[row, col].plot(acc[subject], linewidth = .8, alpha = 0.6, label = f"{subject + 1}")
 
         # plot the average
         average = np.average(acc, axis = 0)
-        axs[row, col].plot(average, linewidth = 1.5, color = "k")
+        axs[row, col].plot(average, linewidth = 1.5, color = "k", label = "Mean")
 
         if row == 0:
             axs[row, col].set_title(info["area"], size = 16)
@@ -95,6 +95,8 @@ def twobytwo_plot(files_dict, results_path, savepath = None):
 
             # horizontal line at 0.5
             ax.axhline(y = 0.5, color = "k", linestyle = "--", linewidth = 1)
+        
+        axs[-1, -1].legend(loc = "lower right", ncols = 3)
 
     plt.tight_layout()
 
