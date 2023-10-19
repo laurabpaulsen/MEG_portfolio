@@ -102,8 +102,8 @@ def across_subject(decoder, Xs, ys):
     results : array
         Array with shape (n_subjects, n_timepoints) containing decoding results for each subject and timepoint.
     """
-    
-    results = np.zeros((len(Xs), 550//10)) # number of subjects, number of time points
+    T = 550
+    results = np.zeros((len(Xs), T//5)) # number of subjects, number of time points
 
     for i in tqdm(range(len(Xs)), desc = "Leaving out data from subject for testing"):
         X_tmp = Xs.copy()
@@ -116,12 +116,10 @@ def across_subject(decoder, Xs, ys):
         y_train = np.concatenate(y_tmp, axis=0)
         print(X_train.shape, y_train.shape)
         
-        # loop over 10 time points per range
-        N, S, T = X_train.shape # ntrials, nsources, ntimepoints
 
-        for t_ind, t in enumerate(range(0, T-10, 10)):
-            x_tmp_train = X_train[:, :, t:t+10].reshape((X_train.shape[0], 10*S))
-            x_tmp_test = X_test[:, :, t:t+10].reshape((X_test.shape[0], 10*S))
+        for t_ind, t in enumerate(range(0, T-5, 5)):
+            x_tmp_train = X_train[:, :, t:t+5].reshape((X_train.shape[0], 5*X_train.shape[1]))
+            x_tmp_test = X_test[:, :, t:t+5].reshape((X_test.shape[0], 5*X_test.shape[1]))
 
             print(x_tmp_train.shape, y_train.shape)
 
@@ -181,7 +179,7 @@ if __name__ in "__main__":
     labels_area_1 = ['parsopercularis-lh','parsorbitalis-lh','parstriangularis-lh']
     labels_area_2 = ['superiorfrontal-rh']
 
-    k_features = 200
+    k_features = 500
 
 
     # create output directory if it doesn't exist

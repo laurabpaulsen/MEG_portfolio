@@ -60,61 +60,75 @@ def determine_ax(info):
 
 def twobytwo_plot(files_dict, results_path, savepath = None):
 
-    fig, axs = plt.subplots(2, 2, figsize = (12, 8), dpi = 300)
+    fig, axs = plt.subplots(2, 2, figsize = (12, 8), dpi = 300, sharey = True)
 
     for filename, info in files_dict.items():
-        try: 
-            acc = np.load(results_path / filename)
-            acc = acc[:, :300]
+        acc = np.load(results_path / filename)
+        acc = acc[:, :300]
 
-            # determine the ax to plot on
-            row, col = determine_ax(info)
+        # determine the ax to plot on
+        row, col = determine_ax(info)
 
-            for subject in range(acc.shape[0]):
-                axs[row, col].plot(acc[subject], linewidth = .8, alpha = 0.6, label = f"Subject {subject + 1}")
+        for subject in range(acc.shape[0]):
+            axs[row, col].plot(acc[subject], linewidth = .8, alpha = 0.6, label = f"Subject {subject + 1}")
 
-            # plot the average
-            average = np.average(acc, axis = 0)
-            axs[row, col].plot(average, linewidth = 1.5, color = "k")
+        # plot the average
+        average = np.average(acc, axis = 0)
+        axs[row, col].plot(average, linewidth = 1.5, color = "k")
 
-            axs[row, col].set_title(info["decoding"] + " " + info["area"])
-            axs[row, col].set_xlabel("Time (s)")
-            axs[row, col].set_ylabel("Accuracy")
-        except:
-            pass
+        if row == 0:
+            axs[row, col].set_title(info["area"], size = 16)
+        if col == 0:
+            if row == 0:
+                axs[row, col].set_ylabel("Positive vs Negative", size = 16)
+            else:
+                axs[row, col].set_ylabel("Self-chosen vs Assigned", size = 16)
 
+        axs[row, col].set_xlabel("Time (s)")
+        
+  
         for ax in axs.flat:
             axis_seconds(ax)
+            ax.set_xlim(0, 300)
+                    # vertical line at 0
+            ax.axvline(x = 0+0.2*250, color = "k", linestyle = "--", linewidth = 1)
+
+            # horizontal line at 0.5
+            ax.axhline(y = 0.5, color = "k", linestyle = "--", linewidth = 1)
+
+    plt.tight_layout()
 
     if savepath:
         plt.savefig(savepath)
 
 def plot_average(files_dict, results_path, savepath = None):
-    fig, axes = plt.subplots(1, 2, figsize = (12, 8), dpi = 300, sharey=True)
+    fig, axes = plt.subplots(2, 1, figsize = (12, 8), dpi = 300, sharey=True)
     
     for filename, info in files_dict.items():
-        try:
-            acc = np.load(results_path / filename)
-            acc = acc[:, :300]
+        acc = np.load(results_path / filename)
+        acc = acc[:, :300]
 
-            # determine the ax to plot on
-            row, col = determine_ax(info)
+        # determine the ax to plot on
+        row, col = determine_ax(info)
 
-            # get the average
-            average = np.average(acc, axis = 0)
+        # get the average
+        average = np.average(acc, axis = 0)
 
-            axes[col].plot(average, linewidth = 1.5, label = info["decoding"] + " " + info["area"])
+        axes[row].plot(average, linewidth = 1.5, label = info["area"])
         
-        except:
-            pass
-
     for ax in axes.flat:
         ax.set_xlabel("Time (s)")
         ax.set_ylabel("Accuracy")
 
         ax.legend()
         axis_seconds(ax)
+        ax.set_xlim(0, 300)
 
+    axes[0].set_title("Positive vs Negative")
+    axes[1].set_title("Self-chosen vs Assigned")
+
+    plt.tight_layout()
+     
     if savepath:
         plt.savefig(savepath)
 
@@ -132,7 +146,6 @@ if __name__ in "__main__":
 
     for f in files:
         acc = np.load(f)
-        print(acc.shape)
         plot_decoding_accuracy(
             acc[:, :300], 
             title = f.stem, 
