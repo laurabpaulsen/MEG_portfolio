@@ -12,11 +12,11 @@ def plot_decoding_accuracy(acc, title, legend_title, savepath = None):
     fig, ax = plt.subplots(1, 1, figsize = (12, 8), dpi = 300)
 
     for subject in range(acc.shape[0]):
-        ax.plot(acc[subject], linewidth = 1, alpha = 0.6, label = f"Subject {subject + 1}")
+        ax.plot(acc[subject], linewidth = .8, alpha = 0.6, label = f"Subject {subject + 1}")
 
     # plot the average
     average = np.average(acc, axis = 0)
-    ax.plot(average, linewidth = 2, color = "k")
+    ax.plot(average, linewidth = 1.5, color = "k")
 
     ax.set_title(title)
     ax.set_xlabel("Time (s)")
@@ -35,9 +35,12 @@ def plot_decoding_accuracy(acc, title, legend_title, savepath = None):
 
     # x limits
     ax.set_xlim(0, 250*2.2)
+    ax.set_ylim(.40, .60)
 
     if savepath:
         plt.savefig(savepath)
+
+    plt.close()
 
 
 
@@ -54,12 +57,13 @@ if __name__ in "__main__":
         outpath.mkdir()
 
     for f in files:
-        acc = np.load(results_path / f)
+        acc = np.load(f)
+        print(acc.shape)
         plot_decoding_accuracy(
-            acc, 
-            title = f, 
+            acc[:, :-1], 
+            title = f.stem, 
             legend_title = "Test subject",
-            savepath = outpath / f"{f[:-4]}.png"
+            savepath = outpath / f"{f.name[:-4]}.png"
             )
 
     

@@ -172,7 +172,7 @@ if __name__ in "__main__":
     labels_area_1 = ['parsopercularis-lh','parsorbitalis-lh','parstriangularis-lh']
     labels_area_2 = ['superiorfrontal-rh']
 
-    k_features = 200
+    k_features = 150
 
 
     # create output directory if it doesn't exist
