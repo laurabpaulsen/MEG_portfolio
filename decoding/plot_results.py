@@ -42,6 +42,49 @@ def plot_decoding_accuracy(acc, title, legend_title, savepath = None):
 
     plt.close()
 
+def determine_ax(info):
+    """
+    Determines the ax to plot on based on the decoding and area
+    """
+    if info["decoding"] == "pos_neg":
+        row = 0
+    elif info["decoding"] == "assigned_selfchosen":
+        row = 1
+    
+    if info["area"] == "LIFG":
+        col = 0
+    elif info["area"] == "mPFC":
+        col = 1
+
+    return row, col
+
+def twobytwo_plot(files_dict, results_path savepath = None):
+
+    fig, axs = plt.subplots(2, 2, figsize = (12, 8), dpi = 300)
+
+    for idx, (filename, info) in enumerate(files_dict.items()):
+        acc = np.load(results_path / filename)
+
+        # determine the ax to plot on
+        row, col = determine_ax(info)
+
+        for subject in range(acc.shape[0]):
+            axs[row, col].plot(acc[subject], linewidth = .8, alpha = 0.6, label = f"Subject {subject + 1}")
+
+        # plot the average
+        average = np.average(acc, axis = 0)
+        axs[row, col].plot(average, linewidth = 1.5, color = "k")
+
+        axs[row, col].set_title(info["decoding"] + " " + info["area"])
+        axs[row, col].set_xlabel("Time (s)")
+        axs[row, col].set_ylabel("Accuracy")
+
+
+        for ax in axs.flat:
+            axis_seconds(ax)
+
+    if savepath:
+        plt.savefig(savepath)
 
 
 if __name__ in "__main__":
@@ -65,6 +108,21 @@ if __name__ in "__main__":
             legend_title = "Test subject",
             savepath = outpath / f"{f.name[:-4]}.png"
             )
+        
+    
+    # 2X2 plot with results for pos_neg and assigned_selfchosen in rows and LIFG and mPFC in columns
+    files = {"across_subjects_pos_neg_area_mPFC_150.npy": {"decoding": "pos_neg", "area": "mPFC"},
+                "across_subjects_pos_neg_area_LIFG_150.npy": {"decoding": "pos_neg", "area": "LIFG"},
+                "across_subjects_assigned_selfchosen_area_mPFC_150.npy": {"decoding": "assigned_selfchosen", "area": "mPFC"},
+                "across_subjects_assigned_selfchosen_area_LIFG_150.npy": {"decoding": "assigned_selfchosen", "area": "LIFG"}
+        }
+
+    twobytwo_plot(
+        files, 
+        results_path = results_path,
+        savepath = outpath / "results.png"
+        )
+
 
     
 
