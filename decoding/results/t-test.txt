@@ -1,0 +1,12 @@
+Time window: (0.52, 0.67)
+Decoding type 1: pos_neg
+Decoding type 2: assigned_selfchosen
+Area: LIFG
+t = -0.019104727719638302, p = 0.9852907089257088
+
+Time window: (0.52, 0.67)
+Decoding type 1: pos_neg
+Decoding type 2: assigned_selfchosen
+Area: mPFC
+t = -1.948586655371535, p = 0.0923596217700893
+
