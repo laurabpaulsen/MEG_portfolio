@@ -101,11 +101,13 @@ def main():
                 if 'self' in recording_name:
                     event_id = {
                         "img/self/positive": 11, 
-                        "img/self/negative": 12}
+                        "img/self/negative": 12,
+                        "button": 202}
                 elif 'other' in recording_name: 
                     event_id = {
                         "img/assigned/positive": 21, 
-                        "img/assigned/negative": 22}
+                        "img/assigned/negative": 22,
+                        "button": 202}
 
                 epochs = preprocess_data_sensorspace(
                     fif_path = fif_file_path, 
