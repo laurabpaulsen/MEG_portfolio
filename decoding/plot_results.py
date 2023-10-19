@@ -90,24 +90,30 @@ def twobytwo_plot(files_dict, results_path, savepath = None):
         plt.savefig(savepath)
 
 def plot_average(files_dict, results_path, savepath = None):
-    fig, ax = plt.subplots(1, 1, figsize = (12, 8), dpi = 300)
+    fig, axes = plt.subplots(1, 2, figsize = (12, 8), dpi = 300, sharey=True)
     
     for filename, info in files_dict.items():
         try:
             acc = np.load(results_path / filename)
             acc = acc[:, :300]
 
+            # determine the ax to plot on
+            row, col = determine_ax(info)
+
             # get the average
             average = np.average(acc, axis = 0)
 
-            ax.plot(average, linewidth = 1.5, label = info["decoding"] + " " + info["area"])
+            axes[col].plot(average, linewidth = 1.5, label = info["decoding"] + " " + info["area"])
+        
         except:
             pass
-    ax.set_xlabel("Time (s)")
-    ax.set_ylabel("Accuracy")
 
-    ax.legend()
-    axis_seconds(ax)
+    for ax in axes.flat:
+        ax.set_xlabel("Time (s)")
+        ax.set_ylabel("Accuracy")
+
+        ax.legend()
+        axis_seconds(ax)
 
     if savepath:
         plt.savefig(savepath)
