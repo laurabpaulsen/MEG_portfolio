@@ -1,12 +1,16 @@
 Time window: (0.52, 0.67)
 Decoding type 1: pos_neg
 Decoding type 2: assigned_selfchosen
+Mean accuracy decoding type 1: 0.5021916146916146
+Mean accuracy decoding type 2: 0.5022962415540541
 Area: LIFG
 t = -0.019104727719638302, p = 0.9852907089257088
 
 Time window: (0.52, 0.67)
 Decoding type 1: pos_neg
 Decoding type 2: assigned_selfchosen
+Mean accuracy decoding type 1: 0.4952009702009702
+Mean accuracy decoding type 2: 0.5038270692567568
 Area: mPFC
 t = -1.948586655371535, p = 0.0923596217700893
 
