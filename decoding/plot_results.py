@@ -62,7 +62,7 @@ def twobytwo_plot(files_dict, results_path, savepath = None):
 
     fig, axs = plt.subplots(2, 2, figsize = (12, 8), dpi = 300)
 
-    for idx, (filename, info) in enumerate(files_dict.items()):
+    for filename, info in files_dict.items():
         try: 
             acc = np.load(results_path / filename)
 
@@ -88,6 +88,25 @@ def twobytwo_plot(files_dict, results_path, savepath = None):
     if savepath:
         plt.savefig(savepath)
 
+def plot_average(files_dict, savepath = None):
+    fig, ax = plt.subplots(1, 1, figsize = (12, 8), dpi = 300)
+    
+    for filename, info in files_dict.items():
+        acc = np.load(results_path / filename)
+
+        # get the average
+        average = np.average(acc, axis = 0)
+
+        ax.plot(average, linewidth = 1.5, label = info["decoding"] + " " + info["area"])
+
+    ax.set_xlabel("Time (s)")
+    ax.set_ylabel("Accuracy")
+
+    ax.legend()
+    axis_seconds(ax)
+
+    if savepath:
+        plt.savefig(savepath)
 
 if __name__ in "__main__":
     path = Path(__file__).parent
@@ -124,6 +143,10 @@ if __name__ in "__main__":
         results_path = results_path,
         savepath = outpath / "results.png"
         )
+    
+    # plot the average of all 4
+    fig, ax = plt.subplots(1, 1, figsize = (12, 8), dpi = 300)
+
 
 
     
