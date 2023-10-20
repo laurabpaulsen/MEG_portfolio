@@ -1,16 +1,16 @@
-Time window: (0.52, 0.67)
+Time window: (0.32, 0.47000000000000003)
 Decoding type 1: pos_neg
 Decoding type 2: assigned_selfchosen
-Mean accuracy decoding type 1: 0.5021916146916146, standard deviation: 0.00879393970159378
-Mean accuracy decoding type 2: 0.5022962415540541, standard deviation: 0.009302192897616055
+Mean accuracy decoding type 1: 0.4998440748440748, standard deviation: 0.0026941933851755565
+Mean accuracy decoding type 2: 0.49679757882882886, standard deviation: 0.009996599564012467
 Area: LIFG
-t = -0.019104727719638302, p = 0.9852907089257088
+t = 0.75291981005974, p = 0.47605150916162187
 
-Time window: (0.52, 0.67)
+Time window: (0.32, 0.47000000000000003)
 Decoding type 1: pos_neg
 Decoding type 2: assigned_selfchosen
-Mean accuracy decoding type 1: 0.4952009702009702, standard deviation: 0.008592352778567324
-Mean accuracy decoding type 2: 0.5038270692567568, standard deviation: 0.006533671630193247
+Mean accuracy decoding type 1: 0.5008316008316007, standard deviation: 0.008098329124319657
+Mean accuracy decoding type 2: 0.49939294763513514, standard deviation: 0.005937447761170669
 Area: mPFC
-t = -1.948586655371535, p = 0.0923596217700893
+t = 0.33190817839179165, p = 0.7496751753886066
 
