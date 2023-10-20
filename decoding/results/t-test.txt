@@ -1,4 +1,4 @@
-Time window: (0.32, 0.47000000000000003)
+Time window: (0.52, 0.67)
 Decoding type 1: pos_neg
 Decoding type 2: assigned_selfchosen
 Mean accuracy decoding type 1: 0.4998440748440748, standard deviation: 0.0026941933851755565
@@ -6,7 +6,7 @@ Mean accuracy decoding type 2: 0.49679757882882886, standard deviation: 0.009996
 Area: LIFG
 t = 0.75291981005974, p = 0.47605150916162187
 
-Time window: (0.32, 0.47000000000000003)
+Time window: (0.52, 0.67)
 Decoding type 1: pos_neg
 Decoding type 2: assigned_selfchosen
 Mean accuracy decoding type 1: 0.5008316008316007, standard deviation: 0.008098329124319657
