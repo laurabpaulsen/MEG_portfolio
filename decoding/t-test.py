@@ -16,7 +16,7 @@ if __name__ in "__main__":
     time_windows = [(.520, .670)] # add more time windows here (in seconds)
 
     # account for the fact that we have data from -0.2 seconds before the onset of the stimulus
-    time_windows_new = [(-0.2 + tw[0], -0.2 + tw[1]) for tw in time_windows]
+    time_windows_new = [(0.2 + tw[0], 0.2 + tw[1]) for tw in time_windows]
     decoding_types = ["pos_neg", "assigned_selfchosen"]
     areas = ["LIFG", "mPFC"]
 
