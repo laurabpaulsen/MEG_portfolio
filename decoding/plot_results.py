@@ -180,11 +180,11 @@ if __name__ in "__main__":
 
     # plot button press vs inner speech
     acc_buttonpress_lifg = np.load(results_path / f"across_subjects_innerspeech_buttonpress_area_LIFG_150.npy")
-    #acc_buttonpress_mpfc = np.load(results_path / f"across_subjects_innerspeech_buttonpress_area_mPFC_150.npy")
+    acc_buttonpress_mpfc = np.load(results_path / f"across_subjects_innerspeech_buttonpress_area_mPFC_150.npy")
 
     fig, ax = plt.subplots(1, 1, figsize = (12, 8), dpi = 300, sharey=True)
     
-    for acc, area in zip([acc_buttonpress_lifg], ["LIFG"]):#, acc_buttonpress_mpfc]: mPFC
+    for acc, area in zip([acc_buttonpress_lifg, acc_buttonpress_mpfc], ["LIFG", "mPFC"]):
         # get the average
         average = np.average(acc, axis = 0)
 
