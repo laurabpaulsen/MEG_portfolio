@@ -1,6 +1,6 @@
 import numpy as np
 from pathlib import Path
-from scipy.stats import ttest_rel
+from scipy.stats import ttest_rel, ttest_1samp
 
 def seconds_to_sample(sec, freq = 250):
     """
@@ -54,6 +54,43 @@ if __name__ in "__main__":
                 f.write(f"Area: {area}\n")
                 f.write(f"t = {t}, p = {p}")
                 f.write("\n\n")
+
+    # check that selfchosen vs assigned decoding in LIFG are significantly different from 0.5
+    acc = np.load(results_path / f"across_subjects_assigned_selfchosen_area_LIFG_150.npy")
+    start_sample = seconds_to_sample(0.520)
+    end_sample = seconds_to_sample(0.670)
+    acc = acc[:, start_sample:end_sample]
+    acc = np.mean(acc, axis = 1)
+    t, p = ttest_1samp(acc, 0.5)
+
+    with open(results_path / f"t-test.txt", "a") as f:
+        f.write("One sample t-test for assigned vs selfchosen decoding in LIFG\n")
+        f.write(f"Time window: {time_windows[0]}\n")
+        f.write(f"Decoding type 1: assigned_selfchosen\n")
+        f.write(f"Mean accuracy decoding type 1: {np.mean(acc)}, standard deviation: {np.std(acc)}\n")
+        f.write(f"Area: LIFG\n")
+        f.write(f"t = {t}, p = {p}")
+        f.write("\n\n")
+    
+
+    # check that pos vs neg decoding in mPFC are significantly different from 0.5
+
+    acc = np.load(results_path / f"across_subjects_pos_neg_area_mPFC_150.npy")
+    start_sample = seconds_to_sample(0.520)
+    end_sample = seconds_to_sample(0.670)
+    acc = acc[:, start_sample:end_sample]
+    acc = np.mean(acc, axis = 1)
+    t, p = ttest_1samp(acc, 0.5)
+
+    with open(results_path / f"t-test.txt", "a") as f:
+        f.write("One sample t-test for pos vs neg decoding in mPFC\n")
+        f.write(f"Time window: {time_windows[0]}\n")
+        f.write(f"Decoding type 1: pos_neg\n")
+        f.write(f"Mean accuracy decoding type 1: {np.mean(acc)}, standard deviation: {np.std(acc)}\n")
+        f.write(f"Area: mPFC\n")
+        f.write(f"t = {t}, p = {p}")
+        
+
 
             
             

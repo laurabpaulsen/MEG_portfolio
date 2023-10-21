@@ -14,3 +14,16 @@ Mean accuracy decoding type 2: 0.49963928772522526, standard deviation: 0.005873
 Area: mPFC
 t = -1.983597506382857, p = 0.0877153682240639
 
+One sample t-test for assigned vs selfchosen decoding in LIFG
+Time window: (0.52, 0.67)
+Decoding type 1: assigned_selfchosen
+Mean accuracy decoding type 1: 0.5022962415540541, standard deviation: 0.009302192897616055
+Area: LIFG
+t = 0.6531023565117076, p = 0.5345449725388073
+
+One sample t-test for pos vs neg decoding in mPFC
+Time window: (0.52, 0.67)
+Decoding type 1: pos_neg
+Mean accuracy decoding type 1: 0.4952009702009702, standard deviation: 0.008592352778567324
+Area: mPFC
+t = -1.4777139288661991, p = 0.18300823364982902
